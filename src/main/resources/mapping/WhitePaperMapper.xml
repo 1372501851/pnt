@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.inesv.mapper.WhitePaperMapper" >
+  <resultMap id="BaseResultMap" type="com.inesv.model.WhitePaper" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="date" property="date" jdbcType="TIMESTAMP" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="BIGINT"/>
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="state" property="state" jdbcType="BIGINT" />
+    <result column="company" property="company" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, date,url,user_id,remark,state,company
+  </sql>
+
+  <insert id="insertPaper" useGeneratedKeys="true" keyProperty="id" parameterType="com.inesv.model.WhitePaper" >
+    INSERT INTO t_whitepaper (date,url,user_id,remark,state,company)
+    VALUES (now(), #{url},#{userId},#{remark},#{state},#{company})
+  </insert>
+
+</mapper>

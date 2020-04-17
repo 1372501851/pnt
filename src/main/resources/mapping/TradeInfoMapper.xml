@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.inesv.mapper.TradeInfoMapper">
+	<resultMap id="BaseResultMap" type="com.inesv.model.TradeInfo">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="user_id" property="userId" jdbcType="BIGINT" />
+		<result column="coin_no" property="coinNo" jdbcType="INTEGER" />
+		<result column="type" property="type" jdbcType="INTEGER" />
+		<result column="order_no" property="orderNo" jdbcType="VARCHAR" />
+		<result column="trade_num" property="tradeNum" jdbcType="DECIMAL" />
+		<result column="untrade_num" property="unTradeNum" jdbcType="DECIMAL" />
+		<result column="out_address" property="outAddress" jdbcType="VARCHAR" />
+		<result column="in_address" property="inAddress" jdbcType="VARCHAR" />
+		<result column="state" property="state" jdbcType="INTEGER" />
+		<result column="ratio" property="ratio" jdbcType="DECIMAL" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		<result column="date" property="date" jdbcType="TIMESTAMP" />
+		<result column="tradetype" property="tradeType" jdbcType="BIGINT" />
+		<result column="hash" property="hash" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id, user_id, coin_no, type, order_no, trade_num, out_address, in_address,
+		state, ratio, remark, date,tradetype,untrade_num   ,hash
+	</sql>
+
+	<insert id="insertTradeInfo" useGeneratedKeys="true"
+		keyProperty="id" parameterType="com.inesv.model.TradeInfo">
+		INSERT INTO t_trade_info
+		(user_id, type, coin_no, order_no, trade_num,
+		out_address, in_address, state, ratio, remark, hash, date,tradetype,untrade_num)
+		VALUES
+		(#{userId}, #{type}, #{coinNo}, #{orderNo}, #{tradeNum},
+		#{outAddress}, #{inAddress}, #{state}, #{ratio}, #{remark}, #{hash}, now(),#{tradeType},#{unTradeNum})
+	</insert>
+
+	<update id="updateTradeInfo" parameterType="com.inesv.model.TradeInfo">
+		UPDATE
+		t_trade_info
+		<trim prefix="set" suffixOverrides=",">
+			<if test="orderNo!=null">order_no=#{orderNo},</if>
+			<if test="remark!=null">remark=#{remark},</if>
+			<if test="hash!=null">hash=#{hash},</if>
+		</trim>
+		WHERE id=#{id}
+	</update>
+
+	<select id="getTradeInfoByCondition" resultMap="BaseResultMap"
+		parameterType="com.inesv.model.TradeInfo">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM t_trade_info
+		WHERE 1 = 1
+		<if test="id!=null">
+			AND id=#{id}
+		</if>
+		<if test="userId!=null">
+			AND user_id=#{userId}
+		</if>
+		<if test="coinNo!=null">
+			AND coin_no=#{coinNo}
+		</if>
+		<if test="state!=null">
+			AND state=#{state}
+		</if>
+		<if test="hash!=null">
+			AND (hash=#{hash})
+		</if>
+	</select>
+
+	<select id="getTradeInfoByConditions" resultMap="BaseResultMap"
+		parameterType="com.inesv.model.TradeInfo">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM t_trade_info
+		<where>
+			<if test="id!=null">
+				AND id=#{id}
+			</if>
+			<if test="userId!=null">
+				AND user_id=#{userId}
+			</if>
+			<if test="coinNo!=null">
+				AND coin_no=#{coinNo}
+			</if>
+			<if test="state!=null">
+				AND state=#{state}
+			</if>
+			<if test="outAddress!=null">
+				AND out_address=#{outAddress}
+			</if>
+			<if test="inAddress!=null">
+				AND in_address=#{inAddress}
+			</if>
+			<if test="dateFormat!=null">
+				AND DATE_FORMAT(date,"%Y-%m") = #{dateFormat}
+			</if>
+			<if test="address!=null">
+				AND (in_address=#{address} OR out_address=#{address})
+			</if>
+			<if test="remark!=null">
+				AND (remark=#{remark})
+			</if>
+			<if test="hash!=null">
+				AND (hash=#{hash})
+			</if>
+		</where>
+		order by date desc
+	</select>
+
+	<select id="getTradeInfoByConditionLast" resultMap="BaseResultMap"
+		parameterType="com.inesv.model.TradeInfo">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM t_trade_info
+		WHERE 1 = 1
+		<if test="id!=null">
+			AND id=#{id}
+		</if>
+		<if test="userId!=null">
+			AND user_id=#{userId}
+		</if>
+		<if test="coinNo!=null">
+			AND coin_no=#{coinNo}
+		</if>
+		<if test="outAddress!=null">
+			AND out_address=#{outAddress}
+		</if>
+		<if test="inAddress!=null">
+			AND in_address=#{inAddress}
+		</if>
+		<if test="state!=null">
+			AND state=#{state}
+		</if>
+		ORDER BY DATE DESC LIMIT 1;
+	</select>
+
+  <select id="getTradeList" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM t_trade_info
+    WHERE in_address = #{address} or out_address = #{address}
+  </select>
+
+</mapper>

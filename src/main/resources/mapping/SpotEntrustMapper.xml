@@ -1,0 +1,653 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.inesv.mapper.SpotEntrustMapper">
+	<resultMap id="BaseResultMap" type="com.inesv.model.SpotEntrust">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="entrust_no" property="entrustNo" jdbcType="VARCHAR" />
+		<result column="user_no" property="userNo" jdbcType="INTEGER" />
+		<result column="entrust_coin" property="entrustCoin" jdbcType="INTEGER" />
+		<result column="entrust_type" property="entrustType" jdbcType="INTEGER" />
+		<result column="entrust_price" property="entrustPrice" jdbcType="DECIMAL" />
+		<result column="entrust_min_price" property="entrustMinPrice" jdbcType="DECIMAL" />
+		<result column="entrust_max_price" property="entrustMaxPrice" jdbcType="DECIMAL" />
+		<result column="record_min_price" property="recordMinPrice" jdbcType="DECIMAL" />
+		<result column="record_max_price" property="recordMaxPrice" jdbcType="DECIMAL" />
+		<result column="entrust_num" property="entrustNum" jdbcType="DECIMAL" />
+		<result column="deal_num" property="dealNum" jdbcType="DECIMAL" />
+		<result column="match_num" property="matchNum" jdbcType="DECIMAL" />
+		<result column="cancel_num" property="cancelNum" jdbcType="DECIMAL" />
+		<result column="poundage" property="poundage" jdbcType="DECIMAL" />
+		<result column="poundage_coin" property="poundageCoin" jdbcType="INTEGER" />
+		<result column="poundage_scale" property="poundageScale" jdbcType="DECIMAL" />
+		<result column="miner_fee" property="minerFee" jdbcType="DECIMAL" />
+		<result column="miner_scale" property="minerScale" jdbcType="DECIMAL" />
+		<result column="receivables_type" property="receivablesType" jdbcType="INTEGER" />
+		<result column="bankcard_id" property="bankcardId" jdbcType="INTEGER" />
+		<result column="matching_type" property="matchingType" jdbcType="INTEGER" />
+		<result column="state" property="state" jdbcType="INTEGER" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		<result column="date" property="date" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, entrust_no,user_no, entrust_coin, entrust_type,
+		entrust_price,
+		entrust_min_price, entrust_max_price,record_min_price,
+		record_max_price,
+		entrust_num, deal_num, match_num,cancel_num,
+		poundage, poundage_coin,
+		poundage_scale,miner_fee,miner_scale,receivables_type,bankcard_id, matching_type,
+		state, remark, date
+	</sql>
+	<!-- 新增委托记录相关信息 -->
+	<insert id="insertSpotEntrust" useGeneratedKeys="true"
+		keyProperty="id" parameterType="com.inesv.model.SpotEntrust">
+		INSERT INTO t_spot_entrust
+		(entrust_no,user_no, entrust_coin, entrust_type,
+		entrust_price,
+		entrust_min_price, entrust_max_price,record_min_price,
+		record_max_price,
+		entrust_num, deal_num, match_num, poundage,
+		poundage_coin,
+		poundage_scale,miner_fee,miner_scale, receivables_type,bankcard_id,
+		matching_type,
+		state, remark, date)
+		VALUES (#{entrustNo},#{userNo},
+		#{entrustCoin}, #{entrustType},
+		#{entrustPrice}, #{entrustMinPrice},
+		#{entrustMaxPrice},#{recordMinPrice}, #{recordMaxPrice},
+		#{entrustNum},
+		#{dealNum}, #{matchNum}, #{poundage},#{poundageCoin},
+		#{poundageScale},#{minerFee},#{minerScale}, #{receivablesType},#{bankcardId},
+		#{matchingType}, #{state}, #{remark}, now())
+	</insert>
+	<!-- 修改委托记录相关信息 -->
+	<update id="updateSpotEntrust" parameterType="com.inesv.model.SpotEntrust">
+		UPDATE t_spot_entrust
+		<set>
+			state=#{state}
+			<if test="dealNum!=null">
+				, deal_num=#{dealNum}
+			</if>
+			<if test="matchNum!=null">
+				, match_num=#{matchNum}
+			</if>
+			<if test="cancelNum!=null">
+				, cancel_num=#{cancelNum}
+			</if>
+			<if test="matchingType!=null">
+				, matching_type=#{matchingType}
+			</if>
+		</set>
+		WHERE 1=1
+		<if test="id!=null">
+			AND id=#{id}
+		</if>
+		<if test="userNo!=null">
+			AND user_no=#{userNo}
+		</if>
+	</update>
+	<!-- 批量修改委托记录相关信息 -->
+	<update id="updateSpotEntrusts" parameterType="java.util.List">
+		<foreach collection="list" item="item" index="index" open=""
+			close="" separator=";">
+			UPDATE t_spot_entrust
+			<set>
+				state=${item.state}
+				<if test="item.dealNum!=null">
+					, deal_num=#{item.dealNum}
+				</if>
+				<if test="item.matchNum!=null">
+					, match_num=#{item.matchNum}
+				</if>
+				<if test="item.cancelNum!=null">
+					, cancel_num=#{item.cancelNum}
+				</if>
+			</set>
+			WHERE id = ${item.id}
+		</foreach>
+	</update>
+	<!-- 通过ID修改委托记录 -->
+	<update id="updateByPrimaryKey" flushCache="true"
+		parameterType="com.inesv.model.SpotEntrust">
+		UPDATE
+		t_spot_entrust
+		SET
+		state = #{state}
+		<if test="dealNum!=null">
+			, deal_num=#{dealNum}
+		</if>
+		<if test="matchNum!=null">
+			, match_num=#{matchNum}
+		</if>
+		<if test="cancelNum!=null">
+			, cancel_num=#{cancelNum}
+		</if>
+		<if test="entrustMinPrice != null">
+			,entrust_min_price=#{entrustMinPrice}
+		</if>
+		<if test="entrustMaxPrice != null">
+			,entrust_max_price=#{entrustMaxPrice}
+		</if>
+		WHERE
+		id = #{id}
+	</update>
+	<!-- 根据条件查找委托记录（总记录数）相关信息 -->
+	<select id="selectCountByCondition" resultType="int"
+		parameterType="com.inesv.model.SpotEntrust">
+		SELECT COUNT(id)
+		FROM t_spot_entrust
+		WHERE 1=1
+		<if test="id!=null">
+			AND id=#{id}
+		</if>
+		<if test="entrustNo!=null">
+			AND entrust_no=#{entrustNo}
+		</if>
+		<if test="userNo!=null">
+			AND user_no=#{userNo}
+		</if>
+		<if test="entrustCoin!=null">
+			AND entrust_coin=#{entrustCoin}
+		</if>
+		<if test="entrustType!=null">
+			AND entrust_type=#{entrustType}
+		</if>
+		<if test="state!=null">
+			AND state=#{state}
+		</if>
+		<if test="date!=null and date!=''">
+			AND date=#{date}
+		</if>
+		<if test="minPrice!=null">
+			AND entrust_price&gt;=#{minPrice}
+		</if>
+		<if test="maxPrice!=null">
+			AND entrust_price&lt;=#{maxPrice}
+		</if>
+		<if test="entrustMinPrice!=null">
+			AND entrust_min_price=#{entrustMinPrice}
+		</if>
+		<if test="entrustMaxPrice!=null">
+			AND entrust_max_price=#{entrustMaxPrice}
+		</if>
+		<if test="receivablesType!=null">
+			AND receivables_type=#{receivablesType}
+		</if>
+		<if test="judgeType!=null">
+			AND (entrust_num - deal_num - match_num) > 0
+		</if>
+	</select>
+	<!-- 根据条件查找委托记录相关信息 -->
+	<select id="selectSpotEntrustByCondition" flushCache="true"
+		resultMap="BaseResultMap" parameterType="com.inesv.model.SpotEntrust">
+		SELECT
+		<include refid="Base_Column_List" />
+		, (entrust_num - deal_num - match_num) AS remainNum
+		, IFNULL((SELECT
+		coin_name FROM t_coin WHERE coin_no =
+		entrust_coin),"") AS coinCore
+		,
+		IFNULL((SELECT username FROM t_user WHERE id = user_no),"") AS
+		username
+		, IFNULL((SELECT photo FROM t_user WHERE id = user_no),"") AS
+		photo
+		FROM t_spot_entrust
+		WHERE 1=1
+		<if test="id!=null">
+			AND id=#{id}
+		</if>
+		<if test="entrustNo!=null">
+			AND entrust_no=#{entrustNo}
+		</if>
+		<if test="userNo!=null">
+			AND user_no=#{userNo}
+		</if>
+		<if test="entrustCoin!=null">
+			AND entrust_coin=#{entrustCoin}
+		</if>
+		<if test="entrustType!=null">
+			AND entrust_type=#{entrustType}
+		</if>
+		<if test="state!=null">
+			AND state=#{state}
+		</if>
+		<if test="minPrice!=null">
+			AND entrust_price&gt;=#{minPrice}
+		</if>
+		<if test="maxPrice!=null">
+			AND entrust_price&lt;=#{maxPrice}
+		</if>
+		<if test="entrustMinPrice!=null">
+			AND entrust_min_price=#{entrustMinPrice}
+		</if>
+		<if test="entrustMaxPrice!=null">
+			AND entrust_max_price=#{entrustMaxPrice}
+		</if>
+		<if test="recordMinPrice!=null">
+			AND record_min_price&gt;=#{recordMinPrice}
+		</if>
+		<if test="recordMaxPrice!=null">
+			AND record_max_price&lt;=#{recordMaxPrice}
+		</if>
+		<if test="receivablesType!=null">
+			AND receivables_type=#{receivablesType}
+		</if>
+		<if test="judgeType!=null">
+			AND (entrust_num - deal_num - match_num) > 0
+		</if>
+		ORDER BY DATE DESC , ID DESC
+	</select>
+	<!-- 根据条件查找委托记录相关信息 -->
+	<select id="selectSpotEntrustByConditions" flushCache="true"
+		resultMap="BaseResultMap" parameterType="com.inesv.model.SpotEntrust">
+		SELECT
+		<include refid="Base_Column_List" />
+		, (entrust_num - deal_num - match_num) AS remainNum
+		, IFNULL((SELECT
+		coin_name FROM t_coin WHERE coin_no =
+		entrust_coin),"") AS coinCore
+		,
+		IFNULL((SELECT username FROM t_user WHERE id = user_no),"") AS
+		username
+		, IFNULL((SELECT photo FROM t_user WHERE id = user_no),"") AS
+		photo
+		FROM t_spot_entrust
+		WHERE 1=1
+		<if test="id!=null">
+			AND id=#{id}
+		</if>
+		<if test="entrustNo!=null">
+			AND entrust_no=#{entrustNo}
+		</if>
+		<if test="userNo!=null">
+			AND user_no=#{userNo}
+		</if>
+		<if test="entrustCoin!=null">
+			AND entrust_coin=#{entrustCoin}
+		</if>
+		<if test="entrustType!=null">
+			AND entrust_type=#{entrustType}
+		</if>
+		<if test="state!=null">
+			AND state=#{state}
+		</if>
+		<if test="conductState!=null">
+			AND (state=0 OR state=3)
+		</if>
+		<if test="completeState!=null">
+			AND (state=1 OR state=2)
+		</if>
+		<if test="minPrice!=null">
+			AND entrust_price&gt;=#{minPrice}
+		</if>
+		<if test="maxPrice!=null">
+			AND entrust_price&lt;=#{maxPrice}
+		</if>
+		<if test="entrustMinPrice!=null">
+			AND entrust_min_price=#{entrustMinPrice}
+		</if>
+		<if test="entrustMaxPrice!=null">
+			AND entrust_max_price=#{entrustMaxPrice}
+		</if>
+		<if test="recordMinPrice!=null">
+			AND record_min_price=#{recordMinPrice}
+		</if>
+		<if test="entrustMaxPrice!=null">
+			AND record_max_price=#{recordMaxPrice}
+		</if>
+		<if test="receivablesType!=null">
+			AND receivables_type=#{receivablesType}
+		</if>
+		<if test="judgeType!=null">
+			AND (entrust_num - deal_num - match_num) > 0
+		</if>
+		ORDER BY DATE DESC , ID DESC
+	</select>
+	<!-- 根据条件查找委托记录相关信息-行级锁 -->
+	<select id="selectSpotEntrustByConditionForUpdate" flushCache="true"
+		resultMap="BaseResultMap" parameterType="com.inesv.model.SpotEntrust">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM t_spot_entrust
+		WHERE 1=1
+		<if test="id!=null">
+			AND id=#{id}
+		</if>
+		<if test="entrustNo!=null">
+			AND entrust_no=#{entrustNo}
+		</if>
+		<if test="userNo!=null">
+			AND user_no=#{userNo}
+		</if>
+		<if test="entrustCoin!=null">
+			AND entrust_coin=#{entrustCoin}
+		</if>
+		<if test="entrustType!=null">
+			AND entrust_type=#{entrustType}
+		</if>
+		<if test="state!=null">
+			AND state=#{state}
+		</if>
+		<if test="date!=null and date!=''">
+			AND date=#{date}
+		</if>
+		<if test="minPrice!=null">
+			AND entrust_price&gt;=#{minPrice}
+		</if>
+		<if test="maxPrice!=null">
+			AND entrust_price&lt;=#{maxPrice}
+		</if>
+		<if test="entrustMinPrice!=null">
+			AND entrust_min_price=#{entrustMinPrice}
+		</if>
+		<if test="entrustMaxPrice!=null">
+			AND entrust_max_price=#{entrustMaxPrice}
+		</if>
+		<if test="recordMinPrice!=null">
+			AND record_min_price=#{recordMinPrice}
+		</if>
+		<if test="entrustMaxPrice!=null">
+			AND record_max_price=#{recordMaxPrice}
+		</if>
+		<if test="receivablesType!=null">
+			AND receivables_type=#{receivablesType}
+		</if>
+		<if test="judgeType!=null">
+			AND (entrust_num - deal_num - match_num) > 0
+		</if>
+		ORDER BY DATE DESC , ID DESC FOR UPDATE
+	</select>
+	<!-- 根据条件查找委托记录相关信息 -->
+	<select id="selectSpotEntrustByConditionsAndMultiTable"
+		flushCache="true" resultMap="BaseResultMap" parameterType="com.inesv.model.SpotEntrust">
+		SELECT
+		t1.id,t1.entrust_no,t1.user_no, t1.entrust_coin,
+		t1.entrust_type, t1.entrust_price,
+		t1.entrust_min_price,
+		t1.entrust_max_price,t1.record_min_price,
+		t1.record_max_price,
+		t1.entrust_num, t1.deal_num, t1.match_num, t1.poundage,
+		t1.poundage_coin,
+		t1.poundage_scale, t1.receivables_type, t1.bankcard_id,
+		t1.matching_type,
+		t1.state, t1.remark, t1.date, t1.date AS
+		dateFormatDate, (t1.entrust_num -
+		t1.deal_num - t1.match_num) AS
+		remainNum,
+		IFNULL((SELECT coin_core FROM t_inesv_coin_type WHERE
+		coin_no =
+		t1.entrust_coin),"COIN") AS coinCore,
+		IFNULL((SELECT username
+		FROM t_inesv_user WHERE user_no = t1.user_no),"") AS
+		userName,
+		(SELECT
+		COUNT(id) FROM t_inesv_spot_deal_detail WHERE (buy_user_no =
+		t1.user_no OR sell_user_no = t1.user_no) AND state = 1) AS tradeSize
+		FROM t_spot_entrust t1
+		WHERE 1=1
+		<if test="id!=null">
+			AND t1.id=#{id}
+		</if>
+		<if test="entrustNo!=null">
+			AND t1.entrust_no=#{entrustNo}
+		</if>
+		<if test="userNo!=null">
+			AND t1.user_no=#{userNo}
+		</if>
+		<if test="entrustCoin!=null">
+			AND t1.entrust_coin=#{entrustCoin}
+		</if>
+		<if test="entrustType!=null">
+			AND t1.entrust_type=#{entrustType}
+		</if>
+		<if test="state!=null">
+			AND t1.state=#{state}
+		</if>
+		<if test="date!=null and date!=''">
+			AND t1.date=#{date}
+		</if>
+		<if test="minPrice!=null">
+			AND t1.entrust_price&gt;=#{minPrice}
+		</if>
+		<if test="maxPrice!=null">
+			AND t1.entrust_price&lt;=#{maxPrice}
+		</if>
+		<if test="entrustMinPrice!=null">
+			AND t1.entrust_min_price=#{entrustMinPrice}
+		</if>
+		<if test="entrustMaxPrice!=null">
+			AND t1.entrust_max_price=#{entrustMaxPrice}
+		</if>
+		<if test="recordMinPrice!=null">
+			AND t1.record_min_price=#{recordMinPrice}
+		</if>
+		<if test="recordMaxPrice!=null">
+			AND t1.record_max_price=#{recordMaxPrice}
+		</if>
+		<if test="receivablesType!=null">
+			AND t1.receivables_type=#{receivablesType}
+		</if>
+		<if test="judgeType!=null">
+			AND (t1.entrust_num - t1.deal_num - t1.match_num) >=
+			t1.entrust_min_price
+		</if>
+		ORDER BY t1.DATE DESC , t1.ID DESC
+	</select>
+	<!-- 根据条件查找委托记录相关信息（精选广告） -->
+	<select id="selectSpotEntrustByConditionsAndFeatured"
+		flushCache="true" resultMap="BaseResultMap" parameterType="com.inesv.model.SpotEntrust">
+		SELECT t1.id,t1.entrust_no, t1.user_no, t1.entrust_coin,
+		t1.entrust_type, t1.entrust_price, t1.entrust_min_price,
+		t1.entrust_max_price,t1.record_min_price, t1.record_max_price,
+		t1.entrust_num, t1.deal_num, t1.match_num, t1.poundage,
+		t1.poundage_coin, t1.poundage_scale, t1.receivables_type,
+		t1.bankcard_id, t1.matching_type,
+		t1.state, t1.remark, t1.date, t1.date AS
+		dateFormatDate, (t1.entrust_num -
+		t1.deal_num - t1.match_num) AS
+		remainNum,
+		IFNULL((SELECT coin_core FROM t_inesv_coin_type WHERE
+		coin_no =
+		t1.entrust_coin),"COIN") AS coinCore,
+		IFNULL((SELECT username
+		FROM t_inesv_user WHERE user_no = t1.user_no),"") AS
+		userName,
+		(SELECT
+		COUNT(id) FROM t_inesv_spot_deal_detail WHERE (buy_user_no =
+		t1.user_no OR sell_user_no = t1.user_no) AND state = 1) AS tradeSize
+		FROM t_spot_entrust t1
+		WHERE t1.state = 0 AND (t1.entrust_num -
+		t1.deal_num - t1.match_num) >=
+		t1.entrust_min_price
+		<if test="entrustType!=null">
+			AND t1.entrust_type=#{entrustType}
+		</if>
+		ORDER BY tradeSize DESC LIMIT 4
+	</select>
+	<!-- 查询不同用户的精选广告 -->
+	<select id="selectDistinctSpotEntrustByConditionsAndFeatured"
+		flushCache="true" resultMap="BaseResultMap" parameterType="com.inesv.model.SpotEntrust">
+		SELECT t1.id,t1.entrust_no, t1.user_no, t1.entrust_coin,
+		t1.entrust_type, t1.entrust_price, t1.entrust_min_price,
+		t1.entrust_max_price,t1.record_min_price, t1.record_max_price,
+		t1.entrust_num, t1.deal_num, t1.match_num, t1.poundage,
+		t1.poundage_coin, t1.poundage_scale, t1.receivables_type,
+		t1.bankcard_id, t1.matching_type,
+		t1.state, t1.remark, t1.date, t1.date AS
+		dateFormatDate, (t1.entrust_num -
+		t1.deal_num - t1.match_num) AS
+		remainNum,
+		IFNULL((SELECT coin_core FROM t_inesv_coin_type WHERE
+		coin_no =
+		t1.entrust_coin),"COIN") AS coinCore,
+		IFNULL((SELECT username
+		FROM t_inesv_user WHERE user_no = t1.user_no),"") AS
+		userName,
+		(SELECT
+		COUNT(id) FROM t_inesv_spot_deal_detail WHERE buy_user_no =
+		t1.user_no
+		OR sell_user_no = t1.user_no) AS tradeSize
+		FROM t_spot_entrust t1
+		WHERE
+		t1.id in(
+		SELECT max(t2.id)
+		FROM t_spot_entrust t2
+		WHERE
+		t2.state = 0 AND
+		(t2.entrust_num - t2.deal_num - t2.match_num) >=
+		t2.entrust_min_price
+		<if test="entrustType!=null">
+			AND t2.entrust_type=#{entrustType}
+		</if>
+		GROUP BY t2.user_no
+		)
+		ORDER BY tradeSize DESC LIMIT 4
+	</select>
+	<!-- 根据条件查找对应匹配的买（卖）委托记录相关信息 -->
+	<select id="selectSpotEntrustByMatching" flushCache="true"
+		resultMap="BaseResultMap" parameterType="com.inesv.model.SpotEntrust">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM t_spot_entrust
+		WHERE state = 0
+		<if test="userNo!=null">
+			AND user_no != #{userNo}
+		</if>
+		<if test="entrustCoin!=null">
+			AND entrust_coin=#{entrustCoin}
+		</if>
+		<if test="entrustType!=null">
+			<if test="entrustType == 0">
+				AND entrust_type = 1 AND (entrust_num-deal_num-match_num)
+				&gt;=
+				entrust_min_price AND (entrust_num-deal_num-match_num) &gt; 0
+				AND receivables_type = #{receivablesType} AND
+				(entrust_num-deal_num-match_num) &gt;= #{entrustMinPrice}
+				AND
+				((entrust_min_price &lt;= #{entrustMinPrice} AND #{entrustMinPrice}
+				&lt;= entrust_max_price) OR (entrust_min_price &lt;=
+				#{entrustMaxPrice} AND #{entrustMaxPrice} &lt;= entrust_max_price)
+				OR (#{entrustMinPrice} &lt;= entrust_min_price AND entrust_max_price
+				&lt;= #{entrustMaxPrice}) )
+				AND (((entrust_price - entrust_price *
+				entrust_range) &lt;=
+				(#{entrustPrice} - #{entrustPrice} *
+				#{entrustRange}) AND
+				(#{entrustPrice} - #{entrustPrice} *
+				#{entrustRange}) &lt;=
+				(entrust_price + entrust_price *
+				entrust_range)) OR
+				((entrust_price - entrust_price * entrust_range)
+				&lt;= (#{entrustPrice} +
+				#{entrustPrice} * #{entrustRange}) AND
+				(#{entrustPrice} +
+				#{entrustPrice} * #{entrustRange}) &lt;=
+				(entrust_price +
+				entrust_price * entrust_range)))
+				ORDER BY
+				entrust_price ASC , date ASC
+			</if>
+			<if test="entrustType == 1">
+				AND entrust_type = 0 AND (entrust_num-deal_num-match_num)
+				&gt;=
+				entrust_min_price AND (entrust_num-deal_num-match_num) &gt; 0
+				AND receivables_type = #{receivablesType} AND
+				(entrust_num-deal_num-match_num) &gt;= #{entrustMinPrice}
+				AND
+				((entrust_min_price &lt;= #{entrustMinPrice} AND #{entrustMinPrice}
+				&lt;= entrust_max_price) OR (entrust_min_price &lt;=
+				#{entrustMaxPrice} AND #{entrustMaxPrice} &lt;= entrust_max_price)
+				OR (#{entrustMinPrice} &lt;= entrust_min_price AND entrust_max_price
+				&lt;= #{entrustMaxPrice}) )
+				AND (((entrust_price - entrust_price *
+				entrust_range) &lt;=
+				(#{entrustPrice} - #{entrustPrice} *
+				#{entrustRange}) AND
+				(#{entrustPrice} - #{entrustPrice} *
+				#{entrustRange}) &lt;=
+				(entrust_price + entrust_price *
+				entrust_range)) OR
+				((entrust_price - entrust_price * entrust_range)
+				&lt;= (#{entrustPrice} +
+				#{entrustPrice} * #{entrustRange}) AND
+				(#{entrustPrice} +
+				#{entrustPrice} * #{entrustRange}) &lt;=
+				(entrust_price +
+				entrust_price * entrust_range)))
+				ORDER BY
+				entrust_price DESC , date ASC
+			</if>
+		</if>
+	</select>
+	<!-- 根据条件查找对应匹配的买（卖）委托记录相关信息（行级锁） -->
+	<select id="selectSpotEntrustByMatchingForUpdate" flushCache="true"
+		resultMap="BaseResultMap" parameterType="com.inesv.model.SpotEntrust">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM t_spot_entrust
+		WHERE state = 0
+		<if test="userNo!=null">
+			AND user_no != #{userNo}
+		</if>
+		<if test="entrustCoin!=null">
+			AND entrust_coin=#{entrustCoin}
+		</if>
+		<if test="entrustType!=null">
+			<if test="entrustType == 0">
+				AND entrust_type = 1 AND (entrust_num-deal_num-match_num)
+				&gt;=
+				entrust_min_price AND (entrust_num-deal_num-match_num) &gt; 0
+				AND receivables_type = #{receivablesType} AND
+				(entrust_num-deal_num-match_num) &gt;= #{entrustMinPrice}
+				AND
+				((entrust_min_price &lt;= #{entrustMinPrice} AND #{entrustMinPrice}
+				&lt;= entrust_max_price) OR (entrust_min_price &lt;=
+				#{entrustMaxPrice} AND #{entrustMaxPrice} &lt;= entrust_max_price))
+				AND (((entrust_price - entrust_price * entrust_range) &lt;=
+				(#{entrustPrice} - #{entrustPrice} * #{entrustRange}) AND
+				(#{entrustPrice} - #{entrustPrice} * #{entrustRange}) &lt;=
+				(entrust_price + entrust_price * entrust_range)) OR
+				((entrust_price -
+				entrust_price * entrust_range) &lt;= (#{entrustPrice} +
+				#{entrustPrice} * #{entrustRange}) AND (#{entrustPrice} +
+				#{entrustPrice} * #{entrustRange}) &lt;= (entrust_price +
+				entrust_price * entrust_range)))
+				ORDER BY entrust_price ASC , date
+				ASC
+			</if>
+			<if test="entrustType == 1">
+				AND entrust_type = 0 AND (entrust_num-deal_num-match_num)
+				&gt;=
+				entrust_min_price AND (entrust_num-deal_num-match_num) &gt; 0
+				AND receivables_type = #{receivablesType} AND
+				(entrust_num-deal_num-match_num) &gt;= #{entrustMinPrice}
+				AND
+				((entrust_min_price &lt;= #{entrustMinPrice} AND #{entrustMinPrice}
+				&lt;= entrust_max_price) OR (entrust_min_price &lt;=
+				#{entrustMaxPrice} AND #{entrustMaxPrice} &lt;= entrust_max_price))
+				AND (((entrust_price - entrust_price * entrust_range) &lt;=
+				(#{entrustPrice} - #{entrustPrice} * #{entrustRange}) AND
+				(#{entrustPrice} - #{entrustPrice} * #{entrustRange}) &lt;=
+				(entrust_price + entrust_price * entrust_range)) OR
+				((entrust_price -
+				entrust_price * entrust_range) &lt;= (#{entrustPrice} +
+				#{entrustPrice} * #{entrustRange}) AND (#{entrustPrice} +
+				#{entrustPrice} * #{entrustRange}) &lt;= (entrust_price +
+				entrust_price * entrust_range)))
+				ORDER BY entrust_price DESC , date
+				ASC
+			</if>
+		</if>
+		FOR UPDATE
+	</select>
+	<!-- 根据主键查找用户资产相关信息 -->
+	<select id="selectSpotEntrustByPrimaryKey" useCache="false"
+		flushCache="true" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM t_spot_entrust
+		WHERE id = #{id}
+		FOR UPDATE
+	</select>
+
+</mapper>

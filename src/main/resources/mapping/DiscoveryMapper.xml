@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.inesv.mapper.DiscoveryMapper" >
+  <resultMap id="BaseResultMap" type="com.inesv.model.Discovery" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="module_name" property="moduleName" jdbcType="VARCHAR" />
+    <result column="module_img" property="moduleImg" jdbcType="VARCHAR" />
+    <result column="module_url" property="moduleUrl" jdbcType="VARCHAR" />
+    <result column="module_type" property="moduleType" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+      `id`,
+      `module_name`,
+      `module_img`,
+      `module_url`,
+      `module_type`
+  </sql>
+
+    <select id="discoveryList" resultMap="BaseResultMap" parameterType="com.inesv.model.Discovery">
+    select
+    <include refid="Base_Column_List" />
+    from `t_discovery`
+    <where>
+        <if test="id != null">
+            AND id=#{id}
+        </if>
+        <if test="state != null">
+            AND module_name=#{moduleName}
+        </if>
+        <if test="name != null">
+            AND module_img=#{moduleImg}
+        </if>
+        <if test="idCardNumber != null">
+            AND module_url=#{moduleUrl}
+        </if>
+        <if test="idCardNumber != null">
+            AND module_type=#{moduleType}
+        </if>
+    </where>
+
+  </select>
+
+
+    <select id="queryDiscoveryByCondition" resultMap="BaseResultMap" parameterType="com.inesv.model.Discovery">
+        select
+        <include refid="Base_Column_List" />
+        from `t_discovery`
+        <where>
+            <if test="id != null">
+                AND id=#{id}
+            </if>
+            <if test="moduleName != null">
+                AND module_name=#{moduleName}
+            </if>
+            <if test="moduleImg != null">
+                AND module_img=#{moduleImg}
+            </if>
+            <if test="moduleUrl != null">
+                AND module_url=#{moduleUrl}
+            </if>
+            <if test="moduleType != null">
+                AND module_type=#{moduleType}
+            </if>
+        </where>
+    </select>
+
+
+</mapper>

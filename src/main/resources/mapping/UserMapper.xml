@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.inesv.mapper.UserMapper">
+	<resultMap id="BaseResultMap" type="com.inesv.model.User">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="username" property="username" jdbcType="VARCHAR" />
+		<result column="nickname" property="nickname" jdbcType="VARCHAR" />
+		<result column="photo" property="photo" jdbcType="VARCHAR" />
+		<result column="password" property="password" jdbcType="VARCHAR" />
+		<result column="trade_password" property="tradePassword"
+			jdbcType="VARCHAR" />
+		<result column="token" property="token" jdbcType="VARCHAR" />
+		<result column="state" property="state" jdbcType="INTEGER" />
+		<result column="date" property="date" jdbcType="TIMESTAMP" />
+		<result column="timeout" property="timeout" jdbcType="TIMESTAMP" />
+		<result column="wechat" property="weChat" jdbcType="VARCHAR" />
+		<result column="apay" property="apay" jdbcType="VARCHAR" />
+		<result column="invitation_code" property="invitationCode" jdbcType="VARCHAR" />
+		<result column="phone" property="phone" jdbcType="VARCHAR" />
+		<result column="area_code" property="areaCode" jdbcType="VARCHAR" />
+		<result column="imtoken" property="imToken" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id, username, nickname, password, photo, trade_password,
+		state, date, timeout, token, wechat, apay, invitation_code,phone,area_code,imtoken
+	</sql>
+
+	<insert id="insertUserInfo" useGeneratedKeys="true" keyProperty="id"
+		parameterType="com.inesv.model.User">
+		INSERT INTO t_user (username, nickname, photo, password,
+		trade_password, state, token, date, wechat, apay, invitation_code)
+		VALUES (#{username}, #{nickname}, #{photo}, #{password}, #{tradePassword},
+		#{state}, #{token}, now(), #{weChat}, #{apay}, #{invitationCode})
+	</insert>
+
+	<update id="updateUserInfo" useGeneratedKeys="true" keyProperty="id"
+		parameterType="com.inesv.model.User">
+		UPDATE t_user
+		<set>
+			id = id
+			<if test="username!=null">
+				, username=#{username}
+			</if>
+			<if test="nickname!=null">
+				, nickname=#{nickname}
+			</if>
+			<if test="photo!=null">
+				, photo=#{photo}
+			</if>
+			<if test="password!=null">
+				, password=#{password}
+			</if>
+			<if test="tradePassword!=null">
+				, trade_password=#{tradePassword}
+			</if>
+			<if test="state!=null">
+				, state=#{state}
+			</if>
+			<if test="token!=null">
+				, token=#{token}
+			</if>
+			<if test="timeout!=null">
+				, timeout=now()
+			</if>
+			<if test="weChat!=null">
+				, wechat=#{weChat}
+			</if>
+			<if test="apay!=null">
+				, apay=#{apay}
+			</if>
+			<if test="invitationCode!=null">
+				, invitation_code=#{invitationCode}
+			</if>
+			<if test="phone!=null">
+				, phone=#{phone}
+			</if>
+			<if test="areaCode!=null">
+				, area_code=#{areaCode}
+			</if>
+			<if test="imToken!=null">
+				, imtoken=#{imToken}
+			</if>
+		</set>
+		WHERE 1=1
+		<if test="id!=null">
+			AND id=#{id}
+		</if>
+		<if test="username!=null">
+			AND username=#{username}
+		</if>
+	</update>
+
+	<select id="getUserInfoByCondition" resultMap="BaseResultMap"
+		parameterType="com.inesv.model.User">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM t_user
+		WHERE 1 = 1
+		<if test="id!=null">
+			AND id=#{id}
+		</if>
+		<if test="username!=null">
+			AND username=#{username}
+		</if>
+		<if test="token!=null">
+			AND token=#{token}
+		</if>
+		<if test="invitationCode!=null">
+			AND invitation_code=#{invitationCode}
+		</if>
+		<if test="date!=null">
+			AND date=#{date}
+		</if>
+	</select>
+
+	<select id="getUserInfoByToken" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from t_user
+		where token = #{token}
+	</select>
+
+	<select id="getUserInfoById" resultMap="BaseResultMap"
+		parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from t_user
+		where id = #{userId}
+	</select>
+</mapper>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inesv.mapper.NodeMapper">
+
+    <select id="getParListByPid"  resultType="java.lang.String">
+        SELECT getParListByPid(#{userId}, #{parId});
+    </select>
+
+    <update id="updateIntoAmount" parameterType="java.lang.Object">
+        UPDATE t_node SET into_amount=into_amount-#{amount},updatetime=NOW()  where id=#{nodeId}
+    </update>
+
+    <select id="getFlowRate" parameterType="java.math.BigDecimal" resultType="java.util.Map">
+        SELECT level "level" , static_profit "staticRate" FROM t_node_level WHERE  amount_min <![CDATA[<= ]]> #{sum} and  amount_max <![CDATA[ > ]]>#{sum}
+    </select>
+
+    <select id="getFlowRate2" parameterType="java.math.BigDecimal" resultType="java.util.Map">
+        SELECT level "level" , static_profit "staticRate" FROM t_node_level WHERE  amount_min=#{maxAmountMin}
+    </select>
+
+    <insert id="addNodeProfitRecord" parameterType="java.util.Map" >
+        INSERT INTO ${recordTable} (user_id,profit,type,from_id,create_time) VALUES (#{userId},#{profit},#{type},#{fromId},now())
+    </insert>
+
+    <select id="getBurnGrade" resultType="java.lang.Integer">
+        SELECT MAX(LEVEL) FROM `t_node_level`
+    </select>
+
+    <select id="getAllUserStaticAmount" resultType="java.util.Map">
+                        SELECT  DISTINCT user_id "userId" , node_id "nodeId" FROM t_node_user_total WHERE state=1
+    </select>
+
+    <select id="getStateByNodeId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        SELECT state FROM t_node WHERE id=#{nodeId}
+    </select>
+
+    <select id="getNodeByNodeId" parameterType="java.lang.Long" resultType="com.inesv.model.Node">
+        select state ,address,updatetime  FROM t_node WHERE id=#{nodeId}
+    </select>
+
+    <select id="getMaxAmountMin" resultType="java.math.BigDecimal">
+        SELECT max(amount_min) FROM t_node_level
+    </select>
+
+    <select id="getAllNode" resultType="com.inesv.model.Node">
+        SELECT  id, name ,address ,total_amount "totalAmount" ,into_amount "intoAmount", address_amount "addressAmount", invitation_code "invitationCode",createtime ,updatetime FROM t_node ORDER BY createtime ASC
+    </select>
+
+    <select id="getDetails" parameterType="java.lang.Long" resultType="com.inesv.model.Node">
+                SELECT  id, name ,address ,total_amount "totalAmount" ,into_amount "intoAmount", address_amount "addressAmount", invitation_code "invitationCode",createtime ,updatetime FROM t_node WHERE id=#{nodeId}
+
+    </select>
+</mapper>

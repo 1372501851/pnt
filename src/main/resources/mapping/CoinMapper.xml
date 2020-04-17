@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.inesv.mapper.CoinMapper">
+	<resultMap id="BaseResultMap" type="com.inesv.model.Coin">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="coin_no" property="coinNo" jdbcType="BIGINT" />
+		<result column="coin_name" property="coinName" jdbcType="VARCHAR" />
+		<result column="coin_remark" property="coinRemark" jdbcType="VARCHAR" />
+		<result column="state" property="state" jdbcType="INTEGER" />
+		<result column="min_fee" property="minFee" jdbcType="DECIMAL" />
+		<result column="max_fee" property="maxFee" jdbcType="DECIMAL" />
+		<result column="maximum" property="maximum" jdbcType="DECIMAL" />
+		<result column="date" property="date" jdbcType="TIMESTAMP" />
+		<result column="pnt_ratio" property="pntRatio" jdbcType="DECIMAL" />
+		<result column="quota" property="quota" jdbcType="DECIMAL" />
+		<result column="change_state" property="changeState" jdbcType="INTEGER" />
+		<result column="change_fee" property="changeFee" jdbcType="DECIMAL" />
+		<result column="coin_img" property="coinImg" jdbcType="VARCHAR" />
+		<result column="coin_block" property="coinBlock" jdbcType="INTEGER" />
+		<result column="free_price" property="freePrice" jdbcType="DECIMAL" />
+		<result column="unlock_ratio" property="unlockRatio" jdbcType="DECIMAL" />
+		<result column="unlock_day" property="unlockDay" jdbcType="INTEGER" />
+		<result column="unlock_state" property="unlockState" jdbcType="INTEGER" />
+		<result column="api_type" property="apiType" jdbcType="VARCHAR" />
+		<result column="trade_state" property="tradeState" jdbcType="INTEGER" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id, coin_no, coin_name,coin_remark, state, min_fee, max_fee, maximum,
+
+		date, pnt_ratio, quota, change_state, coin_img,coin_block, change_fee, free_price, unlock_ratio, unlock_day, unlock_state, api_type,trade_state
+	</sql>
+
+	<select id="getCoinByCondition" resultMap="BaseResultMap"
+		parameterType="com.inesv.model.Coin">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM t_coin
+		WHERE 1 = 1
+		<if test="id!=null">
+			AND id=#{id}
+		</if>
+		<if test="coinNo!=null">
+			AND coin_no=#{coinNo}
+		</if>
+		<if test="coinName!=null">
+			AND coin_name=#{coinName}
+		</if>
+		<if test="state!=null">
+			AND state=#{state}
+		</if>
+		<if test="tradeState!=null">
+			AND trade_state=#{tradeState}
+		</if>
+	</select>
+
+	<select id="getCoinByConditions" resultMap="BaseResultMap"
+		parameterType="com.inesv.model.Coin">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM t_coin
+		WHERE 1 = 1
+		<if test="id!=null">
+			AND id=#{id}
+		</if>
+		<if test="coinNo!=null">
+			AND coin_no=#{coinNo}
+		</if>
+		<if test="coinName!=null">
+			AND coin_name=#{coinName}
+		</if>
+		<if test="state!=null">
+			AND state=#{state}
+		</if>
+		<if test="apiType!=null">
+			AND api_type=#{apiType}
+		</if>
+		<if test="tradeState!=null">
+			AND trade_state=#{tradeState}
+		</if>
+	</select>
+
+	<select id="queryCoin" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from t_coin
+		where id = #{id,jdbcType=BIGINT}
+	</select>
+
+    <select id="queryOpenRoutineCoin" resultMap="BaseResultMap">
+        SELECT * from t_coin WHERE change_state = 0 and coin_block = 0
+    </select>
+
+	<select id="queryOpenCoin" resultMap="BaseResultMap">
+		SELECT * from t_coin WHERE
+		change_state = 0
+	</select>
+	<select id="queryCoinByCoinNo" resultMap="BaseResultMap"
+		parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from t_coin
+		where coin_no = #{coinNo,jdbcType=BIGINT}
+	</select>
+
+	<select id="getCoinByCoinNo" resultMap="BaseResultMap"
+		parameterType="Long">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM t_coin
+		WHERE
+		coin_no=#{coinNo}
+	</select>
+
+	<select id="findCoinByFiled" resultMap="BaseResultMap"
+		parameterType="com.inesv.model.Coin">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM t_coin
+		WHERE 1 = 1
+		<if test="id!=null">
+			AND id=#{id}
+		</if>
+		<if test="coinNo!=null">
+			AND coin_no=#{coinNo}
+		</if>
+		<if test="coinName!=null">
+			AND coin_name=#{coinName}
+		</if>
+		<if test="state!=null">
+			AND state=#{state}
+		</if>
+		<if test="tradeState!=null">
+			AND trade_state=#{tradeState}
+		</if>
+	</select>
+
+    <select id="queryOpenPntCoin" resultMap="BaseResultMap">
+        SELECT * from t_coin WHERE change_state = 0 and coin_block = 1
+    </select>
+
+  	<select id="queryCoinList" resultMap="BaseResultMap">
+    	SELECT * from t_coin
+  	</select>
+
+    <select id="getCoinTypeByConditions" resultMap="BaseResultMap"
+            parameterType="com.inesv.model.Coin">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM t_coin
+        WHERE 1 = 1
+        <if test="id!=null">
+            AND id=#{id}
+        </if>
+        <if test="coinNo!=null">
+            AND coin_no=#{coinNo}
+        </if>
+        <if test="coinName!=null">
+            AND coin_name=#{coinName}
+        </if>
+        <if test="state!=null">
+            AND state=#{state}
+        </if>
+		<if test="tradeState!=null">
+			AND trade_state=#{tradeState}
+		</if>
+    </select>
+
+	<select id="queryByCoinName" resultMap="BaseResultMap" parameterType="java.lang.String">
+		SELECT * from t_coin WHERE coin_name = #{coinName,jdbcType=VARCHAR}
+	</select>
+
+	<select id="queryOpenCoinList" resultMap="BaseResultMap">
+		SELECT * from t_coin WHERE state = 1
+	</select>
+
+	<select id="queryAllCoinList" resultMap="BaseResultMap">
+    	SELECT * from t_coin
+  	</select>
+
+	<!--获取开放C2C的货币列表-->
+	<select id="getOpenTransCoinList" resultMap="BaseResultMap">
+    	SELECT * FROM t_coin WHERE spot_entrust_state=1
+  	</select>
+</mapper>

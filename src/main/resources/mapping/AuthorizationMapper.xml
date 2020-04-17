@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inesv.mapper.AuthorizationMapper">
+
+    <select id="isAuthorize" parameterType="java.lang.Object" resultType="java.lang.Integer">
+        SELECT count(*) FROM authorized_user_record WHERE user_id=#{userId} and program_id=#{programId}
+    </select>
+
+    <insert id="register" parameterType="java.lang.Object" >
+        INSERT INTO authorized_land  (program_id,program_name,picture) VALUES (#{programId},#{programName},#{picture})
+    </insert>
+    
+    <select id="info" parameterType="java.lang.String" resultType="java.util.Map">
+        SELECT picture, program_name "programName" FROM authorized_land WHERE program_id=#{programId}
+    </select>
+
+    <insert id="insertRecord" parameterType="java.lang.Object" >
+        INSERT INTO authorized_user_record  (program_id,user_id,program_token) VALUES (#{programId},#{userId},#{programToken})
+    </insert>
+</mapper>

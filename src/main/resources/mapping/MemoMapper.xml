@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.inesv.mapper.MemoMapper">
+	<resultMap id="BaseResultMap" type="com.inesv.model.Memo">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="memo" property="memo" jdbcType="VARCHAR" />
+		<result column="date" property="date" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id,memo,date
+	</sql>
+
+	<select id="getAllMemo" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_memo order by id desc
+	</select>
+	<insert id="addMemo" parameterType="java.lang.String">
+		insert into t_memo
+		(memo,date) values (#{memo},now())
+	</insert>
+	<select id="findByMemo" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_memo where memo=#{memo} order by id desc
+	</select>
+	<delete id="delMemo" parameterType="java.lang.String">
+		delete from t_memo where
+		id=#{id}
+	</delete>
+</mapper>

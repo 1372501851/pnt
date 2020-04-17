@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.inesv.mapper.ParamsMapper" >
+  <resultMap id="BaseResultMap" type="com.inesv.model.Params" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="param_key" property="paramKey" jdbcType="VARCHAR" />
+    <result column="key_name" property="keyName" jdbcType="VARCHAR" />
+    <result column="param_value" property="paramValue" jdbcType="VARCHAR" />
+  </resultMap>
+ <select id="queryByKey" resultMap="BaseResultMap">
+   SELECT * FROM t_params WHERE param_key=#{paramsKey,jdbcType=VARCHAR}
+ </select>
+  <sql id="Base_Column_List" >
+    id, param_key, key_name, param_value
+  </sql>
+  <select id="getParams" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select
+    <include refid="Base_Column_List" />
+    from t_params
+    where param_key = #{paramKey}
+  </select>
+  
+  
+  <update id="updateParams" useGeneratedKeys="true" keyProperty="id" parameterType="com.inesv.model.Params" >
+    UPDATE t_params
+    <set>
+      id = id
+      <if test="paramValue != null">
+        , param_value=#{paramValue}
+      </if>
+    </set>
+    WHERE 
+       param_key=#{paramKey}
+  </update>
+
+</mapper>

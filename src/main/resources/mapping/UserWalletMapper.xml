@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.inesv.mapper.UserWalletMapper">
+	<resultMap id="BaseResultMap" type="com.inesv.model.UserWallet">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="user_id" property="userId" jdbcType="BIGINT" />
+		<result column="address" property="address" jdbcType="VARCHAR" />
+		<result column="flag" property="flag" jdbcType="VARCHAR" />
+		<result column="date" property="date" jdbcType="TIMESTAMP" />
+		<result column="type" property="type" jdbcType="INTEGER" />
+		<result column="state" property="state" jdbcType="INTEGER" />
+		<result column="balance" property="balance" jdbcType="DECIMAL" />
+		<result column="unbalance" property="unbalance" jdbcType="DECIMAL" />
+
+		<result column="wallet_state" property="walletState" jdbcType="INTEGER" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id, user_id, type, address, state, balance, unbalance,wallet_state,
+		date,flag
+	</sql>
+
+	<insert id="insertUserWallets" useGeneratedKeys="true"
+		keyProperty="id" parameterType="java.util.List">
+		INSERT INTO t_user_wallet (user_id, type, address, state, balance,
+		unbalance, date,flag)
+		VALUES
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			( #{item.userId}, #{item.type}, #{item.address},
+			#{item.state},
+			#{item.balance}, #{item.unbalance}, now(),#{item.flag})
+		</foreach>
+	</insert>
+
+	<select id="getUserWalletByCondition" resultMap="BaseResultMap"
+		parameterType="com.inesv.model.UserWallet" flushCache="true" useCache="false">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM t_user_wallet
+		WHERE 1 = 1
+		<if test="id!=null">
+			AND id=#{id}
+		</if>
+		<if test="userId!=null">
+			AND user_id=#{userId}
+		</if>
+		<if test="type!=null">
+			AND type=#{type}
+		</if>
+		<if test="address!=null">
+			AND address=#{address}
+		</if>
+		<if test="state!=null">
+			AND state=#{state}
+		</if>
+	</select>
+	<select id="getUserWalletByConditions" resultMap="BaseResultMap"
+		parameterType="com.inesv.model.UserWallet">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM t_user_wallet
+		WHERE 1 = 1
+		<if test="id!=null">
+			AND id=#{id}
+		</if>
+		<if test="userId!=null">
+			AND user_id=#{userId}
+		</if>
+		<if test="type!=null">
+			AND type=#{type}
+		</if>
+		<if test="address!=null">
+			AND address=#{address}
+		</if>
+		<if test="state!=null">
+			AND state=#{state}
+		</if>
+	</select>
+	<select id="getAllUserWallet" resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM t_user_wallet
+	</select>
+	<select id="getUserWalletByConditionForUpdate" resultMap="BaseResultMap"
+		parameterType="com.inesv.model.UserWallet">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM t_user_wallet
+		WHERE 1 = 1
+		<if test="id!=null">
+			AND id=#{id}
+		</if>
+		<if test="userId!=null">
+			AND user_id=#{userId}
+		</if>
+		<if test="type!=null">
+			AND type=#{type}
+		</if>
+		<if test="address!=null">
+			AND address=#{address}
+		</if>
+		<if test="state!=null">
+			AND state=#{state}
+		</if>
+		FOR UPDATE
+	</select>
+
+	<select id="getuserWallet" resultMap="BaseResultMap"
+		parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from t_user_wallet
+		where user_id = #{userId,jdbcType=BIGINT} AND
+		state=1 order by type
+
+	</select>
+	<select id="getUserWalletByAddress" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from t_user_wallet
+		where address = #{address,jdbcType=VARCHAR}
+	</select>
+
+	<select id="getuserWalletStates" resultMap="BaseResultMap"
+		parameterType="java.lang.Long">
+		select
+		type,state
+		from t_user_wallet
+		where user_id =
+		#{userId,jdbcType=BIGINT}
+	</select>
+
+	<update id="editState" useGeneratedKeys="true" keyProperty="id"
+		parameterType="com.inesv.model.UserWallet">
+		UPDATE t_user_wallet
+		<set>
+			id = id
+			<if test="state!=null">
+				,state=#{state}
+			</if>
+		</set>
+		WHERE
+		user_id=#{userId}
+		AND type=#{type}
+	</update>
+
+	<select id="queryByUserAndOpen" resultMap="BaseResultMap"
+		parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from t_user_wallet
+		where user_id = #{userId,jdbcType=BIGINT} and state
+		= 1
+	</select>
+
+	<select id="queryByUserState" resultMap="BaseResultMap"
+		parameterType="java.util.Map">
+		SELECT * FROM t_user_wallet WHERE user_id =
+		#{userId,jdbcType=BIGINT} AND
+		type=#{coinNo,jdbcType=BIGINT}
+	</select>
+
+	<update id="updateBalance" parameterType="com.inesv.model.UserWallet">
+		update t_user_wallet
+		set user_id = #{userId,jdbcType=BIGINT},
+		type =
+		#{type,jdbcType=INTEGER},
+		address = #{address,jdbcType=VARCHAR},
+		state =
+		#{state,jdbcType=INTEGER},
+		date = #{date,jdbcType=TIMESTAMP},
+		balance =
+		#{balance,jdbcType=DECIMAL}
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+
+
+	<delete id="delUserWalletById" parameterType="java.lang.Long">
+		delete from
+		t_user_wallet where id=#{walletId,jdbcType=BIGINT}
+	</delete>
+	<update id="updateUserWalletByCondition" flushCache="true"
+		parameterType="com.inesv.model.UserWallet">
+		UPDATE
+		t_user_wallet
+		<set>
+			<if test="balance !=null">
+				balance =
+				#{balance,jdbcType=DECIMAL} ,
+			</if>
+			<if test="unbalance !=null">
+				unbalance = #{unbalance,jdbcType=DECIMAL}
+			</if>
+		</set>
+		WHERE
+		id = #{id,jdbcType=BIGINT}
+	</update>
+
+	<select id="userWalletCount" resultMap="BaseResultMap"
+		parameterType="java.util.Map">
+		SELECT count(* ) from t_user_wallet where user_id =
+		#{userId,jdbcType=BIGINT} and coin_no = #{coinNo,jdbcType=BIGINT}
+	</select>
+
+	<!--<insert id="add" parameterType="com.inesv.model.UserWallet">-->
+		<!--INSERT INTO t_user_wallet (id,-->
+		<!--user_id, type, address, state, balance,-->
+		<!--unbalance, date,flag)-->
+		<!--VALUES-->
+		<!--(#{item.id}, #{item.userId}, #{item.type}, #{item.address},-->
+		<!--#{item.state},-->
+		<!--#{item.balance}, #{item.unbalance}, now(),#{item.flag})-->
+	<!--</insert>-->
+	<insert id="add" parameterType="com.inesv.model.UserWallet">
+		INSERT INTO t_user_wallet (
+		user_id, type, address, state, balance,
+		unbalance, date,flag)
+		VALUES
+		( #{userId}, #{type}, #{address},
+		#{state},
+		#{balance}, #{unbalance}, now(),#{flag})
+	</insert>
+
+	<update id="updateThisWallet" parameterType="com.inesv.model.UserWallet">
+		UPDATE t_user_wallet
+		set user_id = #{userId,jdbcType=BIGINT},
+		type =
+		#{type,jdbcType=INTEGER},
+		address = #{address,jdbcType=VARCHAR},
+		state =
+		#{state,jdbcType=INTEGER},
+		date = #{date,jdbcType=TIMESTAMP},
+		balance =
+		#{balance,jdbcType=DECIMAL},
+		unbalance = #{unbalance,jdbcType=DECIMAL}
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+
+	<select id="getAllUserWalletWithoutPTN" resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM t_user_wallet
+		WHERE type!=40 and type!=50
+	</select>
+</mapper>

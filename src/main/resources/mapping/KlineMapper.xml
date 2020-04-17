@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.inesv.mapper.KlineMapper" >
+  <resultMap id="BaseResultMap" type="com.inesv.model.Kline" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="coin_no" property="coinNo" jdbcType="BIGINT" />
+    <result column="kline" property="kline" jdbcType="LONGVARCHAR" />
+    <result column="market" property="market" jdbcType="LONGVARCHAR"/>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id
+  </sql>
+  <sql id="Blob_Column_List" >
+    coin_no, kline, market
+  </sql>
+<select id="queryKlineByCoinNo" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  select * from t_kline where coin_no=#{coinNo,jdbcType=BIGINT}
+</select>
+  <update id="updateByCoinNo" parameterType="com.inesv.model.Kline" >
+  update t_kline
+  set coin_no = #{coinNo,jdbcType=LONGVARCHAR},
+  kline = #{kline,jdbcType=LONGVARCHAR},market = #{market,jdbcType=LONGVARCHAR}
+  where coin_no = #{coinNo,jdbcType=BIGINT}
+</update>
+</mapper>

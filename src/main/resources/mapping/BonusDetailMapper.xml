@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.inesv.mapper.BonusDetailMapper">
+	<resultMap id="BaseResultMap" type="com.inesv.model.BonusDetail">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="user_id" property="userId" jdbcType="BIGINT" />
+		<result column="rec_id" property="recId" jdbcType="BIGINT" />
+		<result column="rec_wallet" property="recWallet" jdbcType="VARCHAR" />
+		<result column="coin_no" property="coinNo" jdbcType="INTEGER" />
+		<result column="bonus_key" property="bonusKey" jdbcType="VARCHAR" />
+		<result column="price" property="price" jdbcType="DOUBLE" />
+		<result column="state" property="state" jdbcType="INTEGER" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		<result column="date" property="date" jdbcType="TIMESTAMP" />
+		<result column="bonus_level" property="bonusLevel" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id, user_id, rec_id, rec_wallet, coin_no, bonus_key, price, state, remark, date, bonus_level
+	</sql>
+
+	<insert id="insertBonusDetail" useGeneratedKeys="true" keyProperty="id"
+		parameterType="com.inesv.model.BonusDetail">
+		INSERT INTO t_bonus_detail (user_id, rec_id, rec_wallet, coin_no, bonus_key, price, state, remark, date, bonus_level)
+		VALUES (#{userId}, #{recId}, #{recWallet}, #{coinNo}, #{bonusKey}, #{price}, #{state}, #{remark}, now(), #{bonusLevel})
+	</insert>
+
+	<update id="updateBonusDetail" parameterType="com.inesv.model.BonusDetail">
+		UPDATE
+		t_bonus_detail
+		<trim prefix="set" suffixOverrides=",">
+			<if test="state!=null">state=#{state},</if>
+			<if test="recWallet!=null">rec_wallet=#{recWallet},</if>
+		</trim>
+		<where>
+			<if test="id!=null">
+				AND id=#{id}
+			</if>
+			<if test="recId!=null">
+				AND rec_id=#{recId}
+			</if>
+			<if test="initialState!=null">
+				AND state=#{initialState}
+			</if>
+		</where>
+	</update>
+
+	<select id="getBonusDetailByCondition" resultMap="BaseResultMap" parameterType="com.inesv.model.BonusDetail">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM t_bonus_detail
+		<where>
+			<if test="state!=null">
+				AND state = #{state}
+			</if>
+			<if test="coinNo!=null">
+				AND coin_no = #{coinNo}
+			</if>
+			<if test="bonusKey!=null">
+				AND bonus_key = #{bonusKey}
+			</if>
+			<if test="recId!=null">
+				AND rec_id = #{recId}
+			</if>
+			<if test="bonusLevel!=null">
+				AND bonus_level = #{bonusLevel}
+			</if>
+		</where>
+	</select>
+
+	<select id="getBonusPriceAndCountByRecNo" resultMap="BaseResultMap" parameterType="com.inesv.model.BonusDetail">
+		SELECT
+		(SELECT IFNULL(SUM(price),"0") FROM t_bonus_detail WHERE rec_id = #{recId} AND state = #{state} ) AS sumPrice,
+		(SELECT IFNULL(COUNT(id),"0") FROM t_user_relation WHERE rec_id = #{recId}) AS sumNumber
+		FROM DUAL
+	</select>
+
+	<select id="getBonudDetailsByRecNo" resultMap="BaseResultMap" parameterType="com.inesv.model.BonusDetail">
+		SELECT
+		<include refid="Base_Column_List" />
+		,IFNULL((SELECT username FROM t_user WHERE id = t1.user_id),"") AS username
+		,IFNULL((SELECT photo FROM t_user WHERE id = t1.user_id),"") AS userphoto
+		FROM t_bonus_detail t1
+		WHERE t1.rec_id=#{recId}
+		<if test="state!=null">
+			AND t1.state=#{state}
+		</if>
+	</select>
+</mapper>

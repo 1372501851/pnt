@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.inesv.mapper.UserBankMapper">
+	<resultMap id="BaseResultMap" type="com.inesv.model.UserBank">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="user_id" property="userId" jdbcType="INTEGER" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="bank" property="bank" jdbcType="VARCHAR" />
+		<result column="code" property="code" jdbcType="VARCHAR" />
+		<result column="bank" property="bank" jdbcType="VARCHAR" />
+		<result column="branch" property="branch" jdbcType="VARCHAR" />
+		<result column="address" property="address" jdbcType="VARCHAR" />
+		<result column="date" property="date" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id, user_id, name, code, bank, branch, address, state, date
+	</sql>
+
+	<insert id="insertUserBank" useGeneratedKeys="true"
+		keyProperty="id" parameterType="com.inesv.model.UserBank">
+		INSERT INTO t_bank_card (user_id, name, code, bank, branch, address, state, date)
+		VALUES (#{userId}, #{name}, #{code}, #{bank}, #{branch}, #{address}, #{state}, now())
+	</insert>
+
+	<select id="selectUserBankByUserNo" resultMap="BaseResultMap" parameterType="com.inesv.model.UserBank">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM t_bank_card
+		WHERE state != 2
+		<if test="userId!=null">
+			AND user_id=#{userId}
+		</if>
+		<if test="code!=null">
+			AND code=#{code}
+		</if>
+	</select>
+
+	<select id="selectUserBankByID" resultMap="BaseResultMap"
+			parameterType="java.lang.Long">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM t_bank_card
+		WHERE id = #{id}
+	</select>
+
+	<update id="updateUserBank" parameterType="com.inesv.model.UserBank">
+		UPDATE t_bank_card
+		SET name = #{name}, code = #{code}, bank = #{bank}, branch = #{branch}, address = #{address}
+		WHERE id=#{id} AND user_id=#{userId}
+	</update>
+
+	<update id="deleteUserBank" parameterType="com.inesv.model.UserBank">
+		UPDATE t_bank_card
+		SET state = 2
+		WHERE id=#{id} AND user_id=#{userId}
+	</update>
+</mapper>

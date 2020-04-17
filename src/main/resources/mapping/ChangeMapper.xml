@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.inesv.mapper.ChangeMapper" >
+  <resultMap id="BaseResultMap" type="com.inesv.model.Change" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="coin_name" property="coinName" jdbcType="VARCHAR" />
+    <result column="in_coin" property="inCoin" jdbcType="BIGINT" />
+    <result column="out_coin" property="outCoin" jdbcType="BIGINT" />
+    <result column="coin_num" property="coinNum" jdbcType="DECIMAL" />
+    <result column="pnt" property="pnt" jdbcType="DECIMAL" />
+    <result column="order_no" property="orderNo" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="ratio" property="ratio" jdbcType="DECIMAL" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="date" property="date" jdbcType="TIMESTAMP" />
+    <result column="frozen_assets" property="frozenAssets" jdbcType="TIMESTAMP" />
+    <result column="last_change_time" property="lastChangeTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, user_id, coin_name, coin_num, pnt, order_no, address, ratio, remark, date, in_coin, out_coin, last_change_time
+  </sql>
+
+  <insert id="add" parameterType="com.inesv.model.Change" >
+    insert into t_change (user_id, coin_name,
+      coin_num, pnt, order_no, 
+      address, ratio, remark, in_coin, out_coin,
+      date, frozen_assets, last_change_time)
+    values (#{userId,jdbcType=BIGINT}, #{coinName,jdbcType=VARCHAR},
+      #{coinNum,jdbcType=DECIMAL}, #{pnt,jdbcType=DECIMAL}, #{orderNo,jdbcType=VARCHAR}, 
+      #{address,jdbcType=VARCHAR}, #{ratio,jdbcType=DECIMAL}, #{remark,jdbcType=VARCHAR}, 
+      #{inCoin,jdbcType=BIGINT}, #{outCoin,jdbcType=BIGINT}, #{date,jdbcType=TIMESTAMP}, #{frozenAssets,jdbcType=DECIMAL}, #{lastChangeTime,jdbcType=TIMESTAMP})
+  </insert>
+  <select id="queryMax" parameterType="java.util.Map" resultMap="BaseResultMap">
+  SELECT * FROM t_change where user_id = #{userId,jdbcType=BIGINT} and out_coin = #{outCoin,jdbcType=BIGINT}
+</select>
+
+  <select id="queryRecordByUserAndCoin" parameterType="java.util.Map" resultMap="BaseResultMap">
+    SELECT * FROM t_change where user_id = #{userId,jdbcType=BIGINT}
+    <if test="outCoin!=null">
+        AND out_coin = #{outCoin,jdbcType=BIGINT}
+    </if>
+      <if test="inCoin!=null">
+          AND in_coin = #{inCoin,jdbcType=BIGINT}
+      </if>
+    ORDER BY date DESC
+  </select>
+
+  <select id="queryDetail" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    SELECT * FROM t_change where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <update id="updateFrozenAssets" parameterType="com.inesv.model.Change">
+            update t_change
+              set user_id = #{userId,jdbcType=BIGINT},
+            in_coin = #{inCoin,jdbcType=BIGINT},
+            out_coin = #{outCoin,jdbcType=BIGINT},
+            coin_name = #{coinName,jdbcType=VARCHAR},
+            coin_num = #{coinNum,jdbcType=DECIMAL},
+            pnt = #{pnt,jdbcType=DECIMAL},
+            order_no = #{orderNo,jdbcType=VARCHAR},
+            address = #{address,jdbcType=VARCHAR},
+            ratio = #{ratio,jdbcType=DECIMAL},
+            remark = #{remark,jdbcType=VARCHAR},
+            date = #{date,jdbcType=TIMESTAMP},
+            frozen_assets = #{frozenAssets,jdbcType=DECIMAL},
+            last_change_time = #{lastChangeTime,jdbcType=TIMESTAMP}
+            where id = #{id,jdbcType=BIGINT}
+  </update>
+
+    <select id="queryByInCoin" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT * FROM t_change where frozen_assets = #{inCoin,jdbcType=BIGINT}
+    </select>
+
+    <select id="queryFrozenAssets" resultMap="BaseResultMap">
+        SELECT * FROM t_change where frozen_assets > 0
+    </select>
+</mapper>

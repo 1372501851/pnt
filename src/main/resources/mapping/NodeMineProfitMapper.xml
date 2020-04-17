@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inesv.mapper.NodeMineProfitMapper">
+
+    <select id="digMineProfitRecord" parameterType="java.lang.Long" resultType="com.inesv.model.NodeMineProfit">
+        SELECT amount "amount",createdate "createdate" FROM t_node_mine_profit WHERE node_id=#{nodeId} ORDER BY createdate DESC limit 30
+    </select>
+</mapper>

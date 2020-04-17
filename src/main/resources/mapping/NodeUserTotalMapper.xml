@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inesv.mapper.NodeUserTotalMapper">
+
+    <select id="getSumByUserId" parameterType="java.lang.Long" resultType="com.inesv.model.NodeUserTotal">
+        SELECT id  "id" , amount "amount",node_id "nodeId",lasttime "lasttime" FROM t_node_user_total WHERE user_id=#{userId} AND state=1
+    </select>
+
+    <update id="updateByUserId" parameterType="java.lang.Long">
+        UPDATE t_node_user_total SET state=2,updatetime=NOW()    WHERE user_id=#{userId} AND state=1
+    </update>
+
+    <select id="getDrawRecord" parameterType="java.lang.Long" resultType="com.inesv.model.NodeUserTotal">
+        SELECT id  "id" ,amount "amount",node_id "nodeId" FROM t_node_user_total WHERE user_id=#{userId} AND state=2 order by createtime desc limit 30
+    </select>
+
+    <select id="drawShowRecord" parameterType="java.lang.Long" resultType="com.inesv.model.NodeUserTotal">
+                SELECT amount "amount",createtime "createtime" FROM t_node_user_total WHERE user_id=#{userId} AND state=1
+    </select>
+
+    <select id="getIsSecondPet" parameterType="java.lang.Long" resultType="java.lang.Integer">
+        SELECT count(*) FROM t_node_user_total WHERE user_id=#{userId} AND state=1
+    </select>
+
+    <select id="getIsExist" parameterType="java.lang.Long" resultType="java.lang.Integer">
+        SELECT count(*) FROM t_node_user_total WHERE user_id=#{userId}
+    </select>
+
+    <select id="getPath" parameterType="java.lang.Integer" resultType="java.lang.String">
+        SELECT path FROM t_node_user_total WHERE node_id=#{nodeId} and tree_grade=#{maxTreeGrade}
+    </select>
+
+
+
+</mapper>

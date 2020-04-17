@@ -1,0 +1,709 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inesv.mapper.base.NodeLevelBaseMapper">
+
+
+    <insert id="insertNodeLevel"  useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `t_node_level`
+        (
+        <trim suffixOverrides=",">
+                    <if test="id!=null">
+                        `id`,
+                    </if>
+                    <if test="level!=null">
+                        `level`,
+                    </if>
+                    <if test="name!=null">
+                        `name`,
+                    </if>
+                    <if test="amountMin!=null">
+                        `amount_min`,
+                    </if>
+                    <if test="amountMax!=null">
+                        `amount_max`,
+                    </if>
+                    <if test="staticProfit!=null">
+                        `static_profit`,
+                    </if>
+                    <if test="remark!=null">
+                        `remark`,
+                    </if>
+                    <if test="createtime!=null">
+                        `createtime`,
+                    </if>
+                    <if test="updatetime!=null">
+                        `updatetime`,
+                    </if>
+        </trim>
+        )
+        VALUES
+        (
+        <trim suffixOverrides=",">
+                <if test="id!=null">
+                    #{id},
+                </if>
+                <if test="level!=null">
+                    #{level},
+                </if>
+                <if test="name!=null">
+                    #{name},
+                </if>
+                <if test="amountMin!=null">
+                    #{amountMin},
+                </if>
+                <if test="amountMax!=null">
+                    #{amountMax},
+                </if>
+                <if test="staticProfit!=null">
+                    #{staticProfit},
+                </if>
+                <if test="remark!=null">
+                    #{remark},
+                </if>
+                <if test="createtime!=null">
+                    #{createtime},
+                </if>
+                <if test="updatetime!=null">
+                    #{updatetime},
+                </if>
+        </trim>
+        )
+    </insert>
+
+
+
+
+    <update id="updateNodeLevel">
+        UPDATE `t_node_level`
+        SET
+        <trim suffixOverrides=",">
+            <if test="level != null">
+                `level` = #{level},
+            </if>
+            <if test="name != null and name!=''">
+                `name` = #{name},
+            </if>
+            <if test="amountMin != null">
+                `amount_min` = #{amountMin},
+            </if>
+            <if test="amountMax != null">
+                `amount_max` = #{amountMax},
+            </if>
+            <if test="staticProfit != null">
+                `static_profit` = #{staticProfit},
+            </if>
+            <if test="remark != null and remark!=''">
+                `remark` = #{remark},
+            </if>
+            <if test="createtime != null">
+                `createtime` = #{createtime},
+            </if>
+            <if test="updatetime != null">
+                `updatetime` = #{updatetime},
+            </if>
+        </trim>
+        WHERE
+        <trim suffixOverrides="and">
+                `id` = #{id} and
+        </trim>
+    </update>
+
+    <update id="update">
+        UPDATE `t_node_level`
+        SET
+        <trim suffixOverrides=",">
+        <if test="set.level != null">
+            `level` = #{set.level},
+        </if>
+        <if test="set.name != null and set.name!=''">
+            `name` = #{set.name},
+        </if>
+        <if test="set.amountMin != null">
+            `amount_min` = #{set.amountMin},
+        </if>
+        <if test="set.amountMax != null">
+            `amount_max` = #{set.amountMax},
+        </if>
+        <if test="set.staticProfit != null">
+            `static_profit` = #{set.staticProfit},
+        </if>
+        <if test="set.remark != null and set.remark!=''">
+            `remark` = #{set.remark},
+        </if>
+        <if test="set.createtime != null">
+            `createtime` = #{set.createtime},
+        </if>
+        <if test="set.updatetime != null">
+            `updatetime` = #{set.updatetime},
+        </if>
+        </trim>
+        <trim prefix="where" suffixOverrides="and | or">
+                <if test="where.idList != null">
+                    `id` in
+                    <foreach collection="where.idList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+            <if test="where.idSt !=null">
+                `id` >= #{where.idSt} and
+            </if>
+            <if test="where.idEd!=null">
+                `id` &lt;= #{where.idEd} and
+            </if>
+                <if test="where.levelList != null">
+                    `level` in
+                    <foreach collection="where.levelList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+            <if test="where.levelSt !=null">
+                `level` >= #{where.levelSt} and
+            </if>
+            <if test="where.levelEd!=null">
+                `level` &lt;= #{where.levelEd} and
+            </if>
+                <if test="where.nameList != null">
+                    `name` in
+                    <foreach collection="where.nameList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+            <if test ="where.fuzzyName!=null and where.fuzzyName.size()>0">
+                (
+                <foreach collection="where.fuzzyName"  separator="or" item="item">
+                    `Name` like concat('%',#{item},'%')
+                </foreach>
+                ) and
+            </if>
+            <if test ="where.rightFuzzyName!=null and where.rightFuzzyName.size()>0">
+                (
+                <foreach collection="where.rightFuzzyName"  separator="or" item="item">
+                    `Name` like concat(#{item},'%')
+                </foreach>
+                ) and
+            </if>
+                <if test="where.amountMinList != null">
+                    `amount_min` in
+                    <foreach collection="where.amountMinList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+            <if test="where.amountMinSt !=null">
+                `amount_min` >= #{where.amountMinSt} and
+            </if>
+            <if test="where.amountMinEd!=null">
+                `amount_min` &lt;= #{where.amountMinEd} and
+            </if>
+                <if test="where.amountMaxList != null">
+                    `amount_max` in
+                    <foreach collection="where.amountMaxList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+            <if test="where.amountMaxSt !=null">
+                `amount_max` >= #{where.amountMaxSt} and
+            </if>
+            <if test="where.amountMaxEd!=null">
+                `amount_max` &lt;= #{where.amountMaxEd} and
+            </if>
+                <if test="where.staticProfitList != null">
+                    `static_profit` in
+                    <foreach collection="where.staticProfitList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+            <if test="where.staticProfitSt !=null">
+                `static_profit` >= #{where.staticProfitSt} and
+            </if>
+            <if test="where.staticProfitEd!=null">
+                `static_profit` &lt;= #{where.staticProfitEd} and
+            </if>
+                <if test="where.remarkList != null">
+                    `remark` in
+                    <foreach collection="where.remarkList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+            <if test ="where.fuzzyRemark!=null and where.fuzzyRemark.size()>0">
+                (
+                <foreach collection="where.fuzzyRemark"  separator="or" item="item">
+                    `Remark` like concat('%',#{item},'%')
+                </foreach>
+                ) and
+            </if>
+            <if test ="where.rightFuzzyRemark!=null and where.rightFuzzyRemark.size()>0">
+                (
+                <foreach collection="where.rightFuzzyRemark"  separator="or" item="item">
+                    `Remark` like concat(#{item},'%')
+                </foreach>
+                ) and
+            </if>
+                <if test="where.createtimeList != null">
+                    `createtime` in
+                    <foreach collection="where.createtimeList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+            <if test="where.createtimeSt !=null">
+                `createtime` >= #{where.createtimeSt} and
+            </if>
+            <if test="where.createtimeEd!=null">
+                `createtime` &lt;= #{where.createtimeEd} and
+            </if>
+                <if test="where.updatetimeList != null">
+                    `updatetime` in
+                    <foreach collection="where.updatetimeList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+            <if test="where.updatetimeSt !=null">
+                `updatetime` >= #{where.updatetimeSt} and
+            </if>
+            <if test="where.updatetimeEd!=null">
+                `updatetime` &lt;= #{where.updatetimeEd} and
+            </if>
+        </trim>
+    </update>
+
+
+    <resultMap type="com.inesv.model.NodeLevel" id="NodeLevelMap">
+        <result property="id" column="id"/>
+        <result property="level" column="level"/>
+        <result property="name" column="name"/>
+        <result property="amountMin" column="amount_min"/>
+        <result property="amountMax" column="amount_max"/>
+        <result property="staticProfit" column="static_profit"/>
+        <result property="remark" column="remark"/>
+        <result property="createtime" column="createtime"/>
+        <result property="updatetime" column="updatetime"/>
+    </resultMap>
+
+
+    <select id="queryNodeLevel" resultMap="NodeLevelMap">
+        select
+        <include refid="baseResult"></include>
+        from  `t_node_level`
+        <trim prefix="where" suffixOverrides="and | or">
+            <if test="id != null">
+                `id` = #{id} and
+            </if>
+            <if test="level != null">
+                `level` = #{level} and
+            </if>
+            <if test="name != null and name!=''">
+                `name` = #{name} and
+            </if>
+            <if test="amountMin != null">
+                `amount_min` = #{amountMin} and
+            </if>
+            <if test="amountMax != null">
+                `amount_max` = #{amountMax} and
+            </if>
+            <if test="staticProfit != null">
+                `static_profit` = #{staticProfit} and
+            </if>
+            <if test="remark != null and remark!=''">
+                `remark` = #{remark} and
+            </if>
+            <if test="createtime != null">
+                `createtime` = #{createtime} and
+            </if>
+            <if test="updatetime != null">
+                `updatetime` = #{updatetime} and
+            </if>
+            <if test = "(_parameter instanceof com.inesv.model.NodeLevel$QueryBuilder) == true">
+                <if test="idList != null">
+                    `id` in
+                    <foreach collection="idList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+                <if test="idSt !=null">
+                    `id` >= #{idSt} and
+                </if>
+                <if test="idEd!=null">
+                    `id` &lt;= #{idEd} and
+                </if>
+                <if test="levelList != null">
+                    `level` in
+                    <foreach collection="levelList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+                <if test="levelSt !=null">
+                    `level` >= #{levelSt} and
+                </if>
+                <if test="levelEd!=null">
+                    `level` &lt;= #{levelEd} and
+                </if>
+                <if test="nameList != null">
+                    `name` in
+                    <foreach collection="nameList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+                <if test ="fuzzyName!=null and fuzzyName.size()>0">
+                    (
+                    <foreach collection="fuzzyName"  separator="or" item="item">
+                        `Name` like concat('%',#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                <if test ="rightFuzzyName!=null and rightFuzzyName.size()>0">
+                    (
+                    <foreach collection="rightFuzzyName"  separator="or" item="item">
+                        `Name` like concat(#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                <if test="amountMinList != null">
+                    `amount_min` in
+                    <foreach collection="amountMinList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+                <if test="amountMinSt !=null">
+                    `amount_min` >= #{amountMinSt} and
+                </if>
+                <if test="amountMinEd!=null">
+                    `amount_min` &lt;= #{amountMinEd} and
+                </if>
+                <if test="amountMaxList != null">
+                    `amount_max` in
+                    <foreach collection="amountMaxList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+                <if test="amountMaxSt !=null">
+                    `amount_max` >= #{amountMaxSt} and
+                </if>
+                <if test="amountMaxEd!=null">
+                    `amount_max` &lt;= #{amountMaxEd} and
+                </if>
+                <if test="staticProfitList != null">
+                    `static_profit` in
+                    <foreach collection="staticProfitList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+                <if test="staticProfitSt !=null">
+                    `static_profit` >= #{staticProfitSt} and
+                </if>
+                <if test="staticProfitEd!=null">
+                    `static_profit` &lt;= #{staticProfitEd} and
+                </if>
+                <if test="remarkList != null">
+                    `remark` in
+                    <foreach collection="remarkList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+                <if test ="fuzzyRemark!=null and fuzzyRemark.size()>0">
+                    (
+                    <foreach collection="fuzzyRemark"  separator="or" item="item">
+                        `Remark` like concat('%',#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                <if test ="rightFuzzyRemark!=null and rightFuzzyRemark.size()>0">
+                    (
+                    <foreach collection="rightFuzzyRemark"  separator="or" item="item">
+                        `Remark` like concat(#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                <if test="createtimeList != null">
+                    `createtime` in
+                    <foreach collection="createtimeList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+                <if test="createtimeSt !=null">
+                    `createtime` >= #{createtimeSt} and
+                </if>
+                <if test="createtimeEd!=null">
+                    `createtime` &lt;= #{createtimeEd} and
+                </if>
+                <if test="updatetimeList != null">
+                    `updatetime` in
+                    <foreach collection="updatetimeList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+                <if test="updatetimeSt !=null">
+                    `updatetime` >= #{updatetimeSt} and
+                </if>
+                <if test="updatetimeEd!=null">
+                    `updatetime` &lt;= #{updatetimeEd} and
+                </if>
+            </if>
+        </trim>
+    </select>
+
+    <select id="queryNodeLevelLimit1" resultMap="NodeLevelMap">
+        select
+        <include refid="baseResult"></include>
+        from  `t_node_level`
+        <trim prefix="where" suffixOverrides="and | or">
+            <if test="id != null">
+                `id` = #{id} and
+            </if>
+            <if test="level != null">
+                `level` = #{level} and
+            </if>
+            <if test="name != null and name!=''">
+                `name` = #{name} and
+            </if>
+            <if test="amountMin != null">
+                `amount_min` = #{amountMin} and
+            </if>
+            <if test="amountMax != null">
+                `amount_max` = #{amountMax} and
+            </if>
+            <if test="staticProfit != null">
+                `static_profit` = #{staticProfit} and
+            </if>
+            <if test="remark != null and remark!=''">
+                `remark` = #{remark} and
+            </if>
+            <if test="createtime != null">
+                `createtime` = #{createtime} and
+            </if>
+            <if test="updatetime != null">
+                `updatetime` = #{updatetime} and
+            </if>
+            <if test = "(_parameter instanceof com.inesv.model.NodeLevel$QueryBuilder) == true">
+                    <if test="idList != null">
+                        `id` in
+                        <foreach collection="idList" close=")" open="(" separator="," item="item">
+                            #{item}
+                        </foreach> and
+                    </if>
+                <if test="idSt !=null">
+                    `id` >= #{idSt} and
+                </if>
+                <if test="idEd!=null">
+                    `id` &lt;= #{idEd} and
+                </if>
+                    <if test="levelList != null">
+                        `level` in
+                        <foreach collection="levelList" close=")" open="(" separator="," item="item">
+                            #{item}
+                        </foreach> and
+                    </if>
+                <if test="levelSt !=null">
+                    `level` >= #{levelSt} and
+                </if>
+                <if test="levelEd!=null">
+                    `level` &lt;= #{levelEd} and
+                </if>
+                    <if test="nameList != null">
+                        `name` in
+                        <foreach collection="nameList" close=")" open="(" separator="," item="item">
+                            #{item}
+                        </foreach> and
+                    </if>
+                <if test ="fuzzyName!=null and fuzzyName.size()>0">
+                    (
+                    <foreach collection="fuzzyName"  separator="or" item="item">
+                        `Name` like concat('%',#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                <if test ="rightFuzzyName!=null and rightFuzzyName.size()>0">
+                    (
+                    <foreach collection="rightFuzzyName"  separator="or" item="item">
+                        `Name` like concat(#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                    <if test="amountMinList != null">
+                        `amount_min` in
+                        <foreach collection="amountMinList" close=")" open="(" separator="," item="item">
+                            #{item}
+                        </foreach> and
+                    </if>
+                <if test="amountMinSt !=null">
+                    `amount_min` >= #{amountMinSt} and
+                </if>
+                <if test="amountMinEd!=null">
+                    `amount_min` &lt;= #{amountMinEd} and
+                </if>
+                    <if test="amountMaxList != null">
+                        `amount_max` in
+                        <foreach collection="amountMaxList" close=")" open="(" separator="," item="item">
+                            #{item}
+                        </foreach> and
+                    </if>
+                <if test="amountMaxSt !=null">
+                    `amount_max` >= #{amountMaxSt} and
+                </if>
+                <if test="amountMaxEd!=null">
+                    `amount_max` &lt;= #{amountMaxEd} and
+                </if>
+                    <if test="staticProfitList != null">
+                        `static_profit` in
+                        <foreach collection="staticProfitList" close=")" open="(" separator="," item="item">
+                            #{item}
+                        </foreach> and
+                    </if>
+                <if test="staticProfitSt !=null">
+                    `static_profit` >= #{staticProfitSt} and
+                </if>
+                <if test="staticProfitEd!=null">
+                    `static_profit` &lt;= #{staticProfitEd} and
+                </if>
+                    <if test="remarkList != null">
+                        `remark` in
+                        <foreach collection="remarkList" close=")" open="(" separator="," item="item">
+                            #{item}
+                        </foreach> and
+                    </if>
+                <if test ="fuzzyRemark!=null and fuzzyRemark.size()>0">
+                    (
+                    <foreach collection="fuzzyRemark"  separator="or" item="item">
+                        `Remark` like concat('%',#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                <if test ="rightFuzzyRemark!=null and rightFuzzyRemark.size()>0">
+                    (
+                    <foreach collection="rightFuzzyRemark"  separator="or" item="item">
+                        `Remark` like concat(#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                    <if test="createtimeList != null">
+                        `createtime` in
+                        <foreach collection="createtimeList" close=")" open="(" separator="," item="item">
+                            #{item}
+                        </foreach> and
+                    </if>
+                <if test="createtimeSt !=null">
+                    `createtime` >= #{createtimeSt} and
+                </if>
+                <if test="createtimeEd!=null">
+                    `createtime` &lt;= #{createtimeEd} and
+                </if>
+                    <if test="updatetimeList != null">
+                        `updatetime` in
+                        <foreach collection="updatetimeList" close=")" open="(" separator="," item="item">
+                            #{item}
+                        </foreach> and
+                    </if>
+                <if test="updatetimeSt !=null">
+                    `updatetime` >= #{updatetimeSt} and
+                </if>
+                <if test="updatetimeEd!=null">
+                    `updatetime` &lt;= #{updatetimeEd} and
+                </if>
+            </if>
+        </trim>
+        limit 1
+    </select>
+
+    <sql id="allResult">
+        <trim suffixOverrides=",">
+        `id`,
+        `level`,
+        `name`,
+        `amount_min`,
+        `amount_max`,
+        `static_profit`,
+        `remark`,
+        `createtime`,
+        `updatetime`,
+        </trim>
+    </sql>
+
+
+
+    <sql id="baseResult">
+        <trim suffixOverrides=",">
+            <if test = "(_parameter instanceof com.inesv.model.NodeLevel$QueryBuilder) == true">
+
+                <if test="fetchFields==null">
+                    <include refid="allResult"></include>
+                </if>
+                <if test="fetchFields!=null">
+                    <if test="fetchFields.AllFields !=null">
+                        <include refid="allResult"></include>
+                    </if>
+                    <if test="fetchFields.AllFields ==null and fetchFields.fetchFields==null and fetchFields.excludeFields==null and fetchFields.otherFields==null">
+                        <include refid="allResult"></include>
+                    </if>
+                    <if test="fetchFields.AllFields==null and fetchFields.fetchFields!=null">
+                    <if test="fetchFields.fetchFields.id==true">
+                        `id`,
+                    </if>
+                    <if test="fetchFields.fetchFields.level==true">
+                        `level`,
+                    </if>
+                    <if test="fetchFields.fetchFields.name==true">
+                        `name`,
+                    </if>
+                    <if test="fetchFields.fetchFields.amountMin==true">
+                        `amount_min`,
+                    </if>
+                    <if test="fetchFields.fetchFields.amountMax==true">
+                        `amount_max`,
+                    </if>
+                    <if test="fetchFields.fetchFields.staticProfit==true">
+                        `static_profit`,
+                    </if>
+                    <if test="fetchFields.fetchFields.remark==true">
+                        `remark`,
+                    </if>
+                    <if test="fetchFields.fetchFields.createtime==true">
+                        `createtime`,
+                    </if>
+                    <if test="fetchFields.fetchFields.updatetime==true">
+                        `updatetime`,
+                    </if>
+                    </if>
+                    <if test="fetchFields.AllFields==null and fetchFields.excludeFields!=null">
+                    <if test="fetchFields.excludeFields.id==null">
+                        `id`,
+                    </if>
+                    <if test="fetchFields.excludeFields.level==null">
+                        `level`,
+                    </if>
+                    <if test="fetchFields.excludeFields.name==null">
+                        `name`,
+                    </if>
+                    <if test="fetchFields.excludeFields.amountMin==null">
+                        `amount_min`,
+                    </if>
+                    <if test="fetchFields.excludeFields.amountMax==null">
+                        `amount_max`,
+                    </if>
+                    <if test="fetchFields.excludeFields.staticProfit==null">
+                        `static_profit`,
+                    </if>
+                    <if test="fetchFields.excludeFields.remark==null">
+                        `remark`,
+                    </if>
+                    <if test="fetchFields.excludeFields.createtime==null">
+                        `createtime`,
+                    </if>
+                    <if test="fetchFields.excludeFields.updatetime==null">
+                        `updatetime`,
+                    </if>
+                    </if>
+                    <if test="fetchFields.otherFields!=null and fetchFields.otherFields.size>0">
+                        <foreach collection="fetchFields.otherFields" index="index" item="item" separator=",">
+                        `#{item}`
+                        </foreach>
+                    </if>
+                </if>
+            </if>
+            <if test="(_parameter instanceof com.inesv.model.NodeLevel$QueryBuilder) == false" >
+                <include refid="allResult"></include>
+            </if>
+
+        </trim>
+    </sql>
+
+
+</mapper>

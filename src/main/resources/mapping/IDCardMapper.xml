@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.inesv.mapper.IDCardMapper">
+    <resultMap id="BaseResultMap" type="com.inesv.model.IDCard">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="gender" property="gender" jdbcType="VARCHAR"/>
+        <result column="id_card_number" property="idCardNumber" jdbcType="VARCHAR"/>
+        <result column="side" property="side" jdbcType="VARCHAR"/>
+        <result column="front_url" property="frontUrl" jdbcType="VARCHAR"/>
+        <result column="back_url" property="backUrl" jdbcType="VARCHAR"/>
+        <result column="front_file_path" property="frontFilePath" jdbcType="VARCHAR"/>
+        <result column="back_file_path" property="backFilePath" jdbcType="VARCHAR"/>
+        <result column="hand_url" property="handUrl" jdbcType="VARCHAR"/>
+        <result column="state" property="state" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    id,user_id,name,gender,id_card_number,side,front_url,back_url,front_file_path,back_file_path,hand_url,state
+    </sql>
+
+    <select id="getByConditions" resultMap="BaseResultMap" parameterType="com.inesv.model.IDCard">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM t_id_card
+        <where>
+            <if test="userId != null">
+                AND user_id=#{userId}
+            </if>
+            <if test="state != null">
+                AND state=#{state}
+            </if>
+            <if test="name != null">
+                AND name=#{name}
+            </if>
+            <if test="idCardNumber != null">
+                AND id_card_number=#{idCardNumber}
+            </if>
+        </where>
+    </select>
+
+    <select id="getByConditionsWithLimit" resultMap="BaseResultMap" parameterType="com.inesv.model.IDCard">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM t_id_card
+        <where>
+            <if test="userId != null">
+                AND user_id=#{userId}
+            </if>
+            <if test="state != null">
+                AND state=#{state}
+            </if>
+        </where>
+        <if test="orderByCondition != null">
+            ${orderByCondition}
+        </if>
+        <if test="limitNum != null">
+            LIMIT ${limitNum}
+        </if>
+
+    </select>
+
+    <insert id="add" parameterType="com.inesv.model.IDCard">
+        INSERT IGNORE INTO
+        t_id_card(user_id,name,gender,id_card_number,side,front_url,back_url,front_file_path,back_file_path,hand_url,create_time)
+        VALUES
+        (#{userId},#{name},#{gender},#{idCardNumber},#{side},#{frontUrl},#{backUrl},#{frontFilePath},#{backFilePath},#{handUrl},NOW())
+    </insert>
+
+    <update id="update" parameterType="com.inesv.model.IDCard">
+        UPDATE IGNORE
+        t_id_card
+        <trim prefix="set" suffixOverrides=",">
+            <if test="state!=null">state=#{state},</if>
+        </trim>
+        <where>
+            <if test="id!=null">
+                AND id=#{id}
+            </if>
+        </where>
+    </update>
+</mapper>

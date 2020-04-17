@@ -1,0 +1,623 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inesv.mapper.base.NodeUserProfitBaseMapper">
+
+
+    <insert id="insertNodeUserProfit"  useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `t_node_user_profit`
+        (
+        <trim suffixOverrides=",">
+                    <if test="id!=null">
+                        `id`,
+                    </if>
+                    <if test="userId!=null">
+                        `user_id`,
+                    </if>
+                    <if test="amount!=null">
+                        `amount`,
+                    </if>
+                    <if test="type!=null">
+                        `type`,
+                    </if>
+                    <if test="createtime!=null">
+                        `createtime`,
+                    </if>
+                    <if test="updatetime!=null">
+                        `updatetime`,
+                    </if>
+                    <if test="state!=null">
+                        `state`,
+                    </if>
+                    <if test="hash!=null">
+                        `hash`,
+                    </if>
+        </trim>
+        )
+        VALUES
+        (
+        <trim suffixOverrides=",">
+                <if test="id!=null">
+                    #{id},
+                </if>
+                <if test="userId!=null">
+                    #{userId},
+                </if>
+                <if test="amount!=null">
+                    #{amount},
+                </if>
+                <if test="type!=null">
+                    #{type},
+                </if>
+                <if test="createtime!=null">
+                    #{createtime},
+                </if>
+                <if test="updatetime!=null">
+                    #{updatetime},
+                </if>
+                <if test="state!=null">
+                    #{state},
+                </if>
+                <if test="hash!=null">
+                    #{hash},
+                </if>
+        </trim>
+        )
+    </insert>
+
+
+
+
+    <update id="updateNodeUserProfit">
+        UPDATE `t_node_user_profit`
+        SET
+        <trim suffixOverrides=",">
+            <if test="userId != null">
+                `user_id` = #{userId},
+            </if>
+            <if test="amount != null">
+                `amount` = #{amount},
+            </if>
+            <if test="type != null">
+                `type` = #{type},
+            </if>
+            <if test="createtime != null">
+                `createtime` = #{createtime},
+            </if>
+            <if test="updatetime != null">
+                `updatetime` = #{updatetime},
+            </if>
+            <if test="state != null">
+                `state` = #{state},
+            </if>
+            <if test="hash != null and hash!=''">
+                `hash` = #{hash},
+            </if>
+        </trim>
+        WHERE
+        <trim suffixOverrides="and">
+                `id` = #{id} and
+        </trim>
+    </update>
+
+    <update id="update">
+        UPDATE `t_node_user_profit`
+        SET
+        <trim suffixOverrides=",">
+        <if test="set.userId != null">
+            `user_id` = #{set.userId},
+        </if>
+        <if test="set.amount != null">
+            `amount` = #{set.amount},
+        </if>
+        <if test="set.type != null">
+            `type` = #{set.type},
+        </if>
+        <if test="set.createtime != null">
+            `createtime` = #{set.createtime},
+        </if>
+        <if test="set.updatetime != null">
+            `updatetime` = #{set.updatetime},
+        </if>
+        <if test="set.state != null">
+            `state` = #{set.state},
+        </if>
+        <if test="set.hash != null and set.hash!=''">
+            `hash` = #{set.hash},
+        </if>
+        </trim>
+        <trim prefix="where" suffixOverrides="and | or">
+                <if test="where.idList != null">
+                    `id` in
+                    <foreach collection="where.idList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+            <if test="where.idSt !=null">
+                `id` >= #{where.idSt} and
+            </if>
+            <if test="where.idEd!=null">
+                `id` &lt;= #{where.idEd} and
+            </if>
+                <if test="where.userIdList != null">
+                    `user_id` in
+                    <foreach collection="where.userIdList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+            <if test="where.userIdSt !=null">
+                `user_id` >= #{where.userIdSt} and
+            </if>
+            <if test="where.userIdEd!=null">
+                `user_id` &lt;= #{where.userIdEd} and
+            </if>
+                <if test="where.amountList != null">
+                    `amount` in
+                    <foreach collection="where.amountList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+            <if test="where.amountSt !=null">
+                `amount` >= #{where.amountSt} and
+            </if>
+            <if test="where.amountEd!=null">
+                `amount` &lt;= #{where.amountEd} and
+            </if>
+                <if test="where.typeList != null">
+                    `type` in
+                    <foreach collection="where.typeList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+            <if test="where.typeSt !=null">
+                `type` >= #{where.typeSt} and
+            </if>
+            <if test="where.typeEd!=null">
+                `type` &lt;= #{where.typeEd} and
+            </if>
+                <if test="where.createtimeList != null">
+                    `createtime` in
+                    <foreach collection="where.createtimeList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+            <if test="where.createtimeSt !=null">
+                `createtime` >= #{where.createtimeSt} and
+            </if>
+            <if test="where.createtimeEd!=null">
+                `createtime` &lt;= #{where.createtimeEd} and
+            </if>
+                <if test="where.updatetimeList != null">
+                    `updatetime` in
+                    <foreach collection="where.updatetimeList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+            <if test="where.updatetimeSt !=null">
+                `updatetime` >= #{where.updatetimeSt} and
+            </if>
+            <if test="where.updatetimeEd!=null">
+                `updatetime` &lt;= #{where.updatetimeEd} and
+            </if>
+                <if test="where.stateList != null">
+                    `state` in
+                    <foreach collection="where.stateList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+            <if test="where.stateSt !=null">
+                `state` >= #{where.stateSt} and
+            </if>
+            <if test="where.stateEd!=null">
+                `state` &lt;= #{where.stateEd} and
+            </if>
+                <if test="where.hashList != null">
+                    `hash` in
+                    <foreach collection="where.hashList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+            <if test ="where.fuzzyHash!=null and where.fuzzyHash.size()>0">
+                (
+                <foreach collection="where.fuzzyHash"  separator="or" item="item">
+                    `Hash` like concat('%',#{item},'%')
+                </foreach>
+                ) and
+            </if>
+            <if test ="where.rightFuzzyHash!=null and where.rightFuzzyHash.size()>0">
+                (
+                <foreach collection="where.rightFuzzyHash"  separator="or" item="item">
+                    `Hash` like concat(#{item},'%')
+                </foreach>
+                ) and
+            </if>
+        </trim>
+    </update>
+
+
+    <resultMap type="com.inesv.model.NodeUserProfit" id="NodeUserProfitMap">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="amount" column="amount"/>
+        <result property="type" column="type"/>
+        <result property="createtime" column="createtime"/>
+        <result property="updatetime" column="updatetime"/>
+        <result property="state" column="state"/>
+        <result property="hash" column="hash"/>
+    </resultMap>
+
+
+    <select id="queryNodeUserProfit" resultMap="NodeUserProfitMap">
+        select
+        <include refid="baseResult"></include>
+        from  `t_node_user_profit`
+        <trim prefix="where" suffixOverrides="and | or">
+            <if test="id != null">
+                `id` = #{id} and
+            </if>
+            <if test="userId != null">
+                `user_id` = #{userId} and
+            </if>
+            <if test="amount != null">
+                `amount` = #{amount} and
+            </if>
+            <if test="type != null">
+                `type` = #{type} and
+            </if>
+            <if test="createtime != null">
+                `createtime` = #{createtime} and
+            </if>
+            <if test="updatetime != null">
+                `updatetime` = #{updatetime} and
+            </if>
+            <if test="state != null">
+                `state` = #{state} and
+            </if>
+            <if test="hash != null and hash!=''">
+                `hash` = #{hash} and
+            </if>
+            <if test = "(_parameter instanceof com.inesv.model.NodeUserProfit$QueryBuilder) == true">
+                <if test="idList != null">
+                    `id` in
+                    <foreach collection="idList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+                <if test="idSt !=null">
+                    `id` >= #{idSt} and
+                </if>
+                <if test="idEd!=null">
+                    `id` &lt;= #{idEd} and
+                </if>
+                <if test="userIdList != null">
+                    `user_id` in
+                    <foreach collection="userIdList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+                <if test="userIdSt !=null">
+                    `user_id` >= #{userIdSt} and
+                </if>
+                <if test="userIdEd!=null">
+                    `user_id` &lt;= #{userIdEd} and
+                </if>
+                <if test="amountList != null">
+                    `amount` in
+                    <foreach collection="amountList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+                <if test="amountSt !=null">
+                    `amount` >= #{amountSt} and
+                </if>
+                <if test="amountEd!=null">
+                    `amount` &lt;= #{amountEd} and
+                </if>
+                <if test="typeList != null">
+                    `type` in
+                    <foreach collection="typeList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+                <if test="typeSt !=null">
+                    `type` >= #{typeSt} and
+                </if>
+                <if test="typeEd!=null">
+                    `type` &lt;= #{typeEd} and
+                </if>
+                <if test="createtimeList != null">
+                    `createtime` in
+                    <foreach collection="createtimeList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+                <if test="createtimeSt !=null">
+                    `createtime` >= #{createtimeSt} and
+                </if>
+                <if test="createtimeEd!=null">
+                    `createtime` &lt;= #{createtimeEd} and
+                </if>
+                <if test="updatetimeList != null">
+                    `updatetime` in
+                    <foreach collection="updatetimeList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+                <if test="updatetimeSt !=null">
+                    `updatetime` >= #{updatetimeSt} and
+                </if>
+                <if test="updatetimeEd!=null">
+                    `updatetime` &lt;= #{updatetimeEd} and
+                </if>
+                <if test="stateList != null">
+                    `state` in
+                    <foreach collection="stateList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+                <if test="stateSt !=null">
+                    `state` >= #{stateSt} and
+                </if>
+                <if test="stateEd!=null">
+                    `state` &lt;= #{stateEd} and
+                </if>
+                <if test="hashList != null">
+                    `hash` in
+                    <foreach collection="hashList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+                <if test ="fuzzyHash!=null and fuzzyHash.size()>0">
+                    (
+                    <foreach collection="fuzzyHash"  separator="or" item="item">
+                        `Hash` like concat('%',#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                <if test ="rightFuzzyHash!=null and rightFuzzyHash.size()>0">
+                    (
+                    <foreach collection="rightFuzzyHash"  separator="or" item="item">
+                        `Hash` like concat(#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+            </if>
+        </trim>
+    </select>
+
+    <select id="queryNodeUserProfitLimit1" resultMap="NodeUserProfitMap">
+        select
+        <include refid="baseResult"></include>
+        from  `t_node_user_profit`
+        <trim prefix="where" suffixOverrides="and | or">
+            <if test="id != null">
+                `id` = #{id} and
+            </if>
+            <if test="userId != null">
+                `user_id` = #{userId} and
+            </if>
+            <if test="amount != null">
+                `amount` = #{amount} and
+            </if>
+            <if test="type != null">
+                `type` = #{type} and
+            </if>
+            <if test="createtime != null">
+                `createtime` = #{createtime} and
+            </if>
+            <if test="updatetime != null">
+                `updatetime` = #{updatetime} and
+            </if>
+            <if test="state != null">
+                `state` = #{state} and
+            </if>
+            <if test="hash != null and hash!=''">
+                `hash` = #{hash} and
+            </if>
+            <if test = "(_parameter instanceof com.inesv.model.NodeUserProfit$QueryBuilder) == true">
+                    <if test="idList != null">
+                        `id` in
+                        <foreach collection="idList" close=")" open="(" separator="," item="item">
+                            #{item}
+                        </foreach> and
+                    </if>
+                <if test="idSt !=null">
+                    `id` >= #{idSt} and
+                </if>
+                <if test="idEd!=null">
+                    `id` &lt;= #{idEd} and
+                </if>
+                    <if test="userIdList != null">
+                        `user_id` in
+                        <foreach collection="userIdList" close=")" open="(" separator="," item="item">
+                            #{item}
+                        </foreach> and
+                    </if>
+                <if test="userIdSt !=null">
+                    `user_id` >= #{userIdSt} and
+                </if>
+                <if test="userIdEd!=null">
+                    `user_id` &lt;= #{userIdEd} and
+                </if>
+                    <if test="amountList != null">
+                        `amount` in
+                        <foreach collection="amountList" close=")" open="(" separator="," item="item">
+                            #{item}
+                        </foreach> and
+                    </if>
+                <if test="amountSt !=null">
+                    `amount` >= #{amountSt} and
+                </if>
+                <if test="amountEd!=null">
+                    `amount` &lt;= #{amountEd} and
+                </if>
+                    <if test="typeList != null">
+                        `type` in
+                        <foreach collection="typeList" close=")" open="(" separator="," item="item">
+                            #{item}
+                        </foreach> and
+                    </if>
+                <if test="typeSt !=null">
+                    `type` >= #{typeSt} and
+                </if>
+                <if test="typeEd!=null">
+                    `type` &lt;= #{typeEd} and
+                </if>
+                    <if test="createtimeList != null">
+                        `createtime` in
+                        <foreach collection="createtimeList" close=")" open="(" separator="," item="item">
+                            #{item}
+                        </foreach> and
+                    </if>
+                <if test="createtimeSt !=null">
+                    `createtime` >= #{createtimeSt} and
+                </if>
+                <if test="createtimeEd!=null">
+                    `createtime` &lt;= #{createtimeEd} and
+                </if>
+                    <if test="updatetimeList != null">
+                        `updatetime` in
+                        <foreach collection="updatetimeList" close=")" open="(" separator="," item="item">
+                            #{item}
+                        </foreach> and
+                    </if>
+                <if test="updatetimeSt !=null">
+                    `updatetime` >= #{updatetimeSt} and
+                </if>
+                <if test="updatetimeEd!=null">
+                    `updatetime` &lt;= #{updatetimeEd} and
+                </if>
+                    <if test="stateList != null">
+                        `state` in
+                        <foreach collection="stateList" close=")" open="(" separator="," item="item">
+                            #{item}
+                        </foreach> and
+                    </if>
+                <if test="stateSt !=null">
+                    `state` >= #{stateSt} and
+                </if>
+                <if test="stateEd!=null">
+                    `state` &lt;= #{stateEd} and
+                </if>
+                    <if test="hashList != null">
+                        `hash` in
+                        <foreach collection="hashList" close=")" open="(" separator="," item="item">
+                            #{item}
+                        </foreach> and
+                    </if>
+                <if test ="fuzzyHash!=null and fuzzyHash.size()>0">
+                    (
+                    <foreach collection="fuzzyHash"  separator="or" item="item">
+                        `Hash` like concat('%',#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                <if test ="rightFuzzyHash!=null and rightFuzzyHash.size()>0">
+                    (
+                    <foreach collection="rightFuzzyHash"  separator="or" item="item">
+                        `Hash` like concat(#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+            </if>
+        </trim>
+        limit 1
+    </select>
+
+    <sql id="allResult">
+        <trim suffixOverrides=",">
+        `id`,
+        `user_id`,
+        `amount`,
+        `type`,
+        `createtime`,
+        `updatetime`,
+        `state`,
+        `hash`,
+        </trim>
+    </sql>
+
+
+
+    <sql id="baseResult">
+        <trim suffixOverrides=",">
+            <if test = "(_parameter instanceof com.inesv.model.NodeUserProfit$QueryBuilder) == true">
+
+                <if test="fetchFields==null">
+                    <include refid="allResult"></include>
+                </if>
+                <if test="fetchFields!=null">
+                    <if test="fetchFields.AllFields !=null">
+                        <include refid="allResult"></include>
+                    </if>
+                    <if test="fetchFields.AllFields ==null and fetchFields.fetchFields==null and fetchFields.excludeFields==null and fetchFields.otherFields==null">
+                        <include refid="allResult"></include>
+                    </if>
+                    <if test="fetchFields.AllFields==null and fetchFields.fetchFields!=null">
+                    <if test="fetchFields.fetchFields.id==true">
+                        `id`,
+                    </if>
+                    <if test="fetchFields.fetchFields.userId==true">
+                        `user_id`,
+                    </if>
+                    <if test="fetchFields.fetchFields.amount==true">
+                        `amount`,
+                    </if>
+                    <if test="fetchFields.fetchFields.type==true">
+                        `type`,
+                    </if>
+                    <if test="fetchFields.fetchFields.createtime==true">
+                        `createtime`,
+                    </if>
+                    <if test="fetchFields.fetchFields.updatetime==true">
+                        `updatetime`,
+                    </if>
+                    <if test="fetchFields.fetchFields.state==true">
+                        `state`,
+                    </if>
+                    <if test="fetchFields.fetchFields.hash==true">
+                        `hash`,
+                    </if>
+                    </if>
+                    <if test="fetchFields.AllFields==null and fetchFields.excludeFields!=null">
+                    <if test="fetchFields.excludeFields.id==null">
+                        `id`,
+                    </if>
+                    <if test="fetchFields.excludeFields.userId==null">
+                        `user_id`,
+                    </if>
+                    <if test="fetchFields.excludeFields.amount==null">
+                        `amount`,
+                    </if>
+                    <if test="fetchFields.excludeFields.type==null">
+                        `type`,
+                    </if>
+                    <if test="fetchFields.excludeFields.createtime==null">
+                        `createtime`,
+                    </if>
+                    <if test="fetchFields.excludeFields.updatetime==null">
+                        `updatetime`,
+                    </if>
+                    <if test="fetchFields.excludeFields.state==null">
+                        `state`,
+                    </if>
+                    <if test="fetchFields.excludeFields.hash==null">
+                        `hash`,
+                    </if>
+                    </if>
+                    <if test="fetchFields.otherFields!=null and fetchFields.otherFields.size>0">
+                        <foreach collection="fetchFields.otherFields" index="index" item="item" separator=",">
+                        `#{item}`
+                        </foreach>
+                    </if>
+                </if>
+            </if>
+            <if test="(_parameter instanceof com.inesv.model.NodeUserProfit$QueryBuilder) == false" >
+                <include refid="allResult"></include>
+            </if>
+
+        </trim>
+    </sql>
+
+
+</mapper>

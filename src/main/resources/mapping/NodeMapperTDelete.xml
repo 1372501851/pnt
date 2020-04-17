@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inesv.mapper.NodeMapperTDelete">
+
+    <resultMap id="BaseResultMap" type="com.inesv.model.Node" >
+        <id column="id" property="id"  />
+        <result column="name" property="name"  />
+        <result column="state" property="state"  />
+        <result column="user_id" property="userId" />
+        <result column="invitation_code" property="invitationCode" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, name,state,user_id,invitation_code,updatetime
+    </sql>
+
+    <select id="getUserIds" resultType="java.util.Map">
+        SELECT  DISTINCT user_id "userId",node_id "nodeId" FROM t_node_record WHERE state=1
+    </select>
+
+    <select id="getParentIds" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        SELECT rec_id FROM t_user_relation WHERE FIND_IN_SET(user_id,getParList(#{userId})) ORDER BY user_id DESC
+    </select>
+
+    <select id="getChildIds" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        SELECT user_id FROM t_user_relation WHERE FIND_IN_SET(rec_id,getChildList(#{userId})) ORDER BY user_id DESC
+    </select>
+
+    <select id="getNoRecommendIds" parameterType="java.lang.Integer"  resultType="java.lang.Integer">
+        SELECT user_id  FROM t_user_relation WHERE user_id=#{userId} and user_id NOT IN (SELECT rec_id  FROM t_user_relation )
+    </select>
+
+    <select id="getSumByUserId" parameterType="java.lang.Integer"  resultType="java.math.BigDecimal">
+        SELECT sum(amount)  FROM t_node_record WHERE user_id=#{userId} and state=1
+    </select>
+
+    <select id="getFlowRate" parameterType="java.math.BigDecimal" resultType="java.util.Map">
+        SELECT level "level" , static_profit "staticRate" FROM t_node_level WHERE  amount_min <![CDATA[<= ]]> #{sum} and  amount_max <![CDATA[ > ]]>#{sum}
+    </select>
+
+    <insert id="addNodeProfitRecord" parameterType="java.util.Map" >
+        INSERT INTO ${recordTable} (user_id,profit,type,level,from_id,create_time) VALUES (#{userId},#{profit},#{type},#{level},#{fromId},now())
+    </insert>
+
+    <delete id="deleteRepeat" parameterType="java.lang.String">
+        DELETE FROM ${recordTable}  WHERE
+        (DATE_FORMAT(create_time, '%Y-%m-%d'),tag_id) IN (
+        SELECT
+        t1.create_time,
+        t1.tag_id
+
+        FROM
+        (SELECT
+        DATE_FORMAT(create_time, '%Y-%m-%d') "create_time",tag_id
+        FROM
+        ${recordTable}
+        GROUP BY
+        DATE_FORMAT(create_time, '%Y-%m-%d'),
+        tag_id
+
+
+        HAVING COUNT(*) > 1) t1)
+        AND id NOT IN (
+        SELECT *
+        FROM
+        ( SELECT
+        MIN(id)
+        FROM
+        ${recordTable}
+        GROUP BY
+        DATE_FORMAT(create_time, '%Y-%m-%d'),
+        tag_id
+
+        HAVING
+        COUNT(*) > 1
+        ) t2
+        )
+    </delete>
+
+    <select id="getSumByRecordUserId" parameterType="java.lang.Object" resultType="java.math.BigDecimal">
+        SELECT SUM(profit) FROM  ${recordTable} WHERE rec_id=#{userId} and type=2
+    </select>
+
+    <select id="getSumByRecordUserId2" parameterType="java.lang.Object" resultType="java.math.BigDecimal">
+        SELECT SUM(profit) FROM  ${recordTable} WHERE rec_id=#{userId} and type=1
+    </select>
+
+    <insert id="insertSumRecord" parameterType="java.lang.Object">
+        INSERT INTO  t_profit_record (user_id,profit,state,status) VALUES (#{userId},#{sum},#{state},#{status})
+    </insert>
+
+    <select id="getTotalSum" resultType="java.util.Map">
+        SELECT SUM(profit) "profit",user_id "userId" FROM  t_profit_record WHERE status != 2 GROUP BY user_id
+    </select>
+
+    <select id="getNodeFounderIds" resultMap="BaseResultMap" >
+        SELECT <include refid="Base_Column_List"/> FROM t_node
+    </select>
+
+    <insert id="insertNodeRecord" parameterType="java.lang.Object">
+        INSERT INTO t_node_record (user_id,node_id,amount,state) VALUES (#{userId},#{nodeId},#{amount},#{state})
+    </insert>
+
+    <update id="withdraw" parameterType="java.lang.Long">
+        UPDATE t_node_record SET state=2 WHERE user_id=#{userId} and state=1
+    </update>
+
+    <update id="updateStatus" parameterType="java.lang.Integer">
+        UPDATE t_profit_record SET status=2 WHERE user_id=#{userId}
+    </update>
+
+    <insert id="insertTradeRecord" parameterType="java.lang.Object">
+        INSERT  INTO t_node_trade_record (user_id,amount,hash,create_time,update_time) VALUES (#{userId},#{amount},#{hash},now(),now())
+    </insert>
+
+    <insert id="insertUserExitRecord" parameterType="java.lang.Object">
+        INSERT  INTO t_node_user_exit_trade_record (user_id,amount,hash,create_time,update_time) VALUES (#{userId},#{amount},#{hash},now(),now())
+    </insert>
+
+    <select id="getStateByNodeId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        SELECT state FROM t_node WHERE id=#{nodeId}
+    </select>
+
+    <select id="getBurnGrade" resultType="java.lang.Integer">
+         SELECT MAX(LEVEL) FROM `t_node_level`
+    </select>
+
+    <select id="getAllUserStaticAmount" resultType="java.util.Map">
+         SELECT  DISTINCT user_id "userId",node_id "nodeId", sum(amount) "sum" FROM t_node_record WHERE state=1
+    </select>
+
+
+</mapper>

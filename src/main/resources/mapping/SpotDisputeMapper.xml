@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.inesv.mapper.SpotDisputeMapper">
+    <resultMap id="BaseResultMap"
+               type="com.inesv.model.SpotDispute">
+        <id column="id" property="id" jdbcType="BIGINT" />
+        <result column="buy_user_no" property="buyUserNo" jdbcType="INTEGER" />
+        <result column="sell_user_no" property="sellUserNo" jdbcType="INTEGER" />
+        <result column="user_no" property="userNo" jdbcType="INTEGER" />
+        <result column="deal_no" property="dealNo" jdbcType="BIGINT" />
+        <result column="order_no" property="orderNo" jdbcType="VARCHAR" />
+        <result column="dispute_phone" property="disputePhone" jdbcType="VARCHAR" />
+        <result column="remark" property="remark" jdbcType="VARCHAR" />
+        <result column="state" property="state" jdbcType="INTEGER" />
+        <result column="type" property="type" jdbcType="INTEGER" />
+        <result column="reason" property="reason" jdbcType="VARCHAR" />
+        <result column="date" property="date" jdbcType="TIMESTAMP" />
+        <result column="original_state" property="originalState" jdbcType="INTEGER" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, buy_user_no, sell_user_no, user_no, deal_no,order_no, dispute_phone, remark, state, type, reason,  date, date AS dateFormatDate
+    </sql>
+
+    <!--新增纠纷记录相关信息-->
+    <insert id="insertSpotDispute" useGeneratedKeys="true" keyProperty="id" parameterType="com.inesv.model.SpotDispute" >
+        INSERT INTO t_spot_dispute (buy_user_no, sell_user_no, user_no, deal_no,order_no, dispute_phone, remark, state, type, reason, date,original_state)
+        VALUES (#{buyUserNo}, #{sellUserNo}, #{userNo}, #{dealNo},#{orderNo}, #{disputePhone}, #{remark}, #{state}, #{type}, #{reason}, NOW(),#{originalState})
+    </insert>
+
+    <!-- 修改纠纷记录相关信息 -->
+    <update id="updateSpotDispute" parameterType="com.inesv.model.SpotDispute" >
+        UPDATE t_spot_dispute
+        <set>
+            state=#{state},
+            reason=#{reason}
+        </set>
+        WHERE id=#{id}
+    </update>
+
+    <!-- 根据条件查找委托记录相关信息 -->
+    <select id="getSpotDisputeByCondition" resultMap="BaseResultMap"
+            parameterType="com.inesv.model.SpotDispute">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM t_spot_dispute
+        WHERE 1=1
+        <if test="id!=null">
+            AND id=#{id}
+        </if>
+        <if test="userNo!=null">
+            AND user_no=#{userNo}
+        </if>
+        <if test="dealNo!=null">
+            AND deal_no=#{dealNo}
+        </if>
+        <if test="state!=null">
+            AND state=#{state}
+        </if>
+        <if test="type!=null">
+            AND type=#{type}
+        </if>
+    </select>
+
+    <!-- 根据条件查找委托记录相关信息 -->
+    <select id="getSpotDisputeByConditions" resultMap="BaseResultMap"
+            parameterType="com.inesv.model.SpotDispute">
+        SELECT
+        <include refid="Base_Column_List" />
+        , IFNULL((SELECT username FROM t_user t1 WHERE t1.id = buy_user_no) ,"") AS buyMatchUserName
+        , IFNULL((SELECT username FROM t_user t1 WHERE t1.id = sell_user_no) ,"") AS sellMatchUserName
+        FROM t_spot_dispute
+        WHERE 1=1
+        <if test="id!=null">
+            AND id=#{id}
+        </if>
+        <if test="userNo!=null">
+            AND user_no=#{userNo}
+        </if>
+        <if test="state!=null">
+            AND state=#{state}
+        </if>
+        <if test="dealNo!=null">
+            AND deal_no=#{dealNo}
+        </if>
+        <if test="type!=null">
+            AND type=#{type}
+        </if>
+        ORDER BY DATE DESC , ID DESC
+    </select>
+
+    <!--&lt;!&ndash; 根据条件查找委托记录相关信息 &ndash;&gt;-->
+    <!--<select id="getSpotDisputeByConditions" resultMap="BaseResultMap"-->
+            <!--parameterType="com.inesv.model.SpotDispute">-->
+        <!--SELECT-->
+        <!--<include refid="Base_Column_List" />-->
+        <!--, IFNULL((SELECT username FROM t_inesv_user t1 WHERE t1.user_no = buy_user_no) ,"") AS buyMatchUserName-->
+        <!--, IFNULL((SELECT username FROM t_inesv_user t1 WHERE t1.user_no = sell_user_no) ,"") AS sellMatchUserName-->
+        <!--FROM t_spot_dispute-->
+        <!--WHERE 1=1-->
+        <!--<if test="id!=null">-->
+            <!--AND id=#{id}-->
+        <!--</if>-->
+        <!--<if test="userNo!=null">-->
+            <!--AND user_no=#{userNo}-->
+        <!--</if>-->
+        <!--<if test="state!=null">-->
+            <!--AND state=#{state}-->
+        <!--</if>-->
+        <!--<if test="dealNo!=null">-->
+            <!--AND deal_no=#{dealNo}-->
+        <!--</if>-->
+        <!--<if test="type!=null">-->
+            <!--AND type=#{type}-->
+        <!--</if>-->
+        <!--ORDER BY DATE DESC , ID DESC-->
+    <!--</select>-->
+
+    <!-- 根据条件查找委托记录相关信息 -->
+    <select id="getSpotDisputeByCount" resultType="int"
+            parameterType="com.inesv.model.SpotDispute">
+        SELECT COUNT(id)
+        FROM t_spot_dispute
+        WHERE 1=1
+        <if test="id!=null">
+            AND id=#{id}
+        </if>
+        <if test="userNo!=null">
+            AND user_no=#{userNo}
+        </if>
+        <if test="state!=null">
+            AND state=#{state}
+        </if>
+        <if test="dealNo!=null">
+            AND deal_no=#{dealNo}
+        </if>
+        <if test="type!=null">
+            AND type=#{type}
+        </if>
+        ORDER BY DATE DESC , ID DESC
+    </select>
+    <select id="queryByUser" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        SELECT * FROM t_spot_dispute WHERE user_no = #{userNo}
+    </select>
+    <select id="queryById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT * FROM t_spot_dispute WHERE id = #{id}
+    </select>
+
+
+
+    <!--修改纠纷记录相关信息-->
+    <update id="updateSpotDisputeOther" useGeneratedKeys="true" keyProperty="id" parameterType="com.inesv.model.SpotDispute" >
+        UPDATE t_spot_dispute SET state = #{state}, reason = #{reason} WHERE deal_no = #{dealNo} AND state = 0;
+    </update>
+</mapper>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inesv.mapper.TeamMapper">
+
+    <select id="teamInfo" parameterType="java.lang.Long" resultType="com.inesv.model.Team">
+            SELECT t.username "username",t.photo "photo", ROUND(IFNULL((SELECT amount FROM t_node_user_total WHERE user_id=#{userId} AND state=1),0),4) "amount"    FROM   `t_user`  t   WHERE t.id=#{userId}
+    </select>
+    
+    <select id="getUserIds" resultType="java.lang.Long">
+        SELECT user_id FROM t_user_relation
+    </select>
+
+    <select id="getPath" parameterType="java.lang.Long" resultType="java.lang.String">
+        SELECT getParList(#{userId})
+    </select>
+
+
+    <update id="insert" parameterType="java.lang.Object" >
+        UPDATE t_user_relation SET tree_grade=#{grade},path=#{path} where user_id=#{userId}
+    </update>
+
+    <select id="isFirstUserId"  parameterType="java.lang.Long"  resultType="java.lang.Integer">
+        SELECT count(*) FROM t_user_relation WHERE user_id=#{userId}
+    </select>
+    
+    <select id="getLowerUserId" parameterType="java.lang.String" resultType="java.lang.Long">
+        SELECT user_id FROM `t_user_relation` WHERE path LIKE '${userId}%' ORDER BY `DATE` DESC
+    </select>
+    
+    <select id="getLowerUserId2" parameterType="java.lang.String" resultType="java.lang.Long">
+        SELECT user_id FROM `t_user_relation` WHERE path LIKE '%${userId}%' ORDER BY `DATE` DESC
+    </select>
+    
+    <select id="getTotalAmount" parameterType="java.lang.String" resultType="java.lang.String">
+                    SELECT ROUND(IFNULL(SUM(amount),0),4) FROM `t_node_user_total`  WHERE state=1 AND user_id IN ( SELECT user_id FROM `t_user_relation` WHERE path LIKE '${userId}%')
+    </select>
+
+    <select id="getTotalAmount2" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT  ROUND(IFNULL(SUM(amount),0),4)   FROM `t_node_user_total`  WHERE state=1 AND user_id IN ( SELECT user_id FROM `t_user_relation` WHERE path LIKE '%${userId}%')
+    </select>
+
+    <select id="getSearch" parameterType="java.lang.Object" resultType="java.lang.Long">
+                   SELECT id FROM (  SELECT id FROM `t_user` WHERE username LIKE '%${username}%'ORDER BY `DATE` DESC  ) t WHERE t.id  IN  (SELECT user_id FROM `t_user_relation` WHERE path LIKE '%${userId}%' ORDER BY `DATE` DESC)
+    </select>
+
+    <select id="getSearch2" parameterType="java.lang.Object" resultType="java.lang.Long">
+        SELECT id FROM (  SELECT id FROM `t_user` WHERE username LIKE '%${username}%'ORDER BY `DATE` DESC  ) t WHERE t.id  IN  (SELECT user_id FROM `t_user_relation` WHERE path LIKE '%${userId}%' ORDER BY `DATE` DESC)
+    </select>
+    
+    <select id="getRecCount" parameterType="java.lang.Long" resultType="java.lang.Integer">
+        SELECT count(*) FROM t_user_relation WHERE rec_id=#{userId}
+    </select>
+    
+    <select id="getRecId" parameterType="java.lang.Long" resultType="java.lang.Long">
+        SELECT user_id FROM t_user_relation WHERE rec_id=#{userId}
+    </select>
+    
+</mapper>

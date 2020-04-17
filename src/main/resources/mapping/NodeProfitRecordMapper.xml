@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inesv.mapper.NodeProfitRecordMapper">
+
+    <resultMap id="BaseResultMap" type="com.inesv.model.NodeProfitRecord" >
+        <id column="id" property="id"  />
+        <result column="type" property="type"  />
+        <result column="profit" property="amount"  />
+        <result column="user_id" property="userId" />
+        <result column="from_id" property="fromId" />
+        <result column="create_time" property="createTime" />
+        <result column="tag" property="tag" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, profit,user_id,from_id,create_time,tag
+    </sql>
+
+    <select id="queryAmountByUser" parameterType="java.lang.Object" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" />
+        FROM ${recordTable}
+        WHERE user_id = #{userId} and node_id=#{nodeId}
+    </select>
+
+    <insert id="insertRecord" parameterType="java.util.Map">
+        INSERT INTO ${recordTable} (user_id,`type`,profit,from_id,create_time,node_id,tag) VALUES (#{userId},#{type},#{amount},#{fromId},now(),#{nodeId},#{tag})
+    </insert>
+
+    <select id="getSumByRecordUserId" parameterType="java.lang.Object" resultType="java.math.BigDecimal">
+        SELECT SUM(profit) FROM  ${recordTable} WHERE user_id=#{userId} and type=2 and node_id=#{nodeId} and tag=1
+    </select>
+
+    <select id="getSumByRecordUserId2" parameterType="java.lang.Object" resultType="java.math.BigDecimal">
+        SELECT SUM(profit) FROM  ${recordTable} WHERE user_id=#{userId} and type=1
+    </select>
+
+    <select id="getStateAmount" parameterType="java.lang.Object" resultType="java.math.BigDecimal">
+        SELECT profit
+        FROM ${recordTable}
+        WHERE user_id = #{userId} and type=1
+    </select>
+
+</mapper>

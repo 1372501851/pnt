@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inesv.mapper.NodeUserProfitMapper">
+
+    <select id="getUserProfitRecord" parameterType="java.lang.Long" resultType="com.inesv.model.NodeUserProfit">
+        SELECT amount "amount",createtime "createtime",`type` "type" FROM t_node_user_profit  WHERE user_id=#{userId} ORDER  BY createtime desc limit 60
+    </select>
+
+    <insert id="insertSumRecord" parameterType="java.lang.Object">
+        INSERT INTO  t_node_user_profit (user_id,amount,type) VALUES (#{userId},#{amount},#{type})
+    </insert>
+
+    <select id="getUserIds" resultType="java.lang.Long">
+        SELECT user_id FROM `t_node_user_profit` WHERE state=0 GROUP BY user_id
+    </select>
+
+    <select id="getSumByUserId" parameterType="java.lang.Long" resultType="java.math.BigDecimal">
+        SELECT sum(amount) FROM t_node_user_profit WHERE user_id=#{userId} and state=0
+    </select>
+
+    <update id="updateStatus" parameterType="java.lang.Object">
+        UPDATE t_node_user_profit SET state=1,hash=#{hash},updatetime=NOW() WHERE user_id=#{userId} and state=0
+    </update>
+
+
+</mapper>

@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.inesv.mapper.SpotDealDetailMapper">
+    <resultMap id="BaseResultMap"
+               type="com.inesv.model.SpotDealDetail">
+        <id column="id" property="id" jdbcType="BIGINT" />
+        <result column="order_no" property="orderNo" jdbcType="VARCHAR" />
+        <result column="entrust_no" property="entrustNo" jdbcType="VARCHAR" />
+        <result column="buy_user_no" property="buyUserNo" jdbcType="INTEGER" />
+        <result column="sell_user_no" property="sellUserNo" jdbcType="INTEGER" />
+        <result column="coin_no" property="coinNo" jdbcType="INTEGER" />
+        <result column="deal_price" property="dealPrice" jdbcType="DECIMAL" />
+        <result column="entrust_price" property="entrustPrice" jdbcType="DECIMAL" />
+        <result column="deal_num" property="dealNum" jdbcType="DECIMAL" />
+        <result column="sum_price" property="sumPrice" jdbcType="DECIMAL" />
+        <result column="poundage_scale" property="poundageScale" jdbcType="DECIMAL" />
+        <result column="poundage_coin" property="poundageCoin" jdbcType="INTEGER" />
+        <result column="poundage" property="poundage" jdbcType="DECIMAL" />
+        <result column="miner_fee" property="minerFee" jdbcType="DECIMAL" />
+        <result column="buy_entrust" property="buyEntrust" jdbcType="BIGINT" />
+        <result column="sell_entrust" property="sellEntrust" jdbcType="BIGINT" />
+        <result column="match_no" property="matchNo" jdbcType="BIGINT" />
+        <result column="remark" property="remark" jdbcType="VARCHAR" />
+        <result column="date" property="date" jdbcType="TIMESTAMP" />
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+        <result column="receivables_type" property="receivablesType" jdbcType="INTEGER" />
+        <result column="sell_account" property="sellAccount" jdbcType="VARCHAR" />
+        <result column="buy_account" property="buyAccount" jdbcType="VARCHAR" />
+        <result column="attr1" property="attr1" jdbcType="VARCHAR" />
+        <result column="attr2" property="attr2" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        id,order_no,entrust_no, buy_user_no, sell_user_no, coin_no, deal_price, entrust_price, deal_num, sum_price,
+        poundage_scale, poundage_coin, poundage,miner_fee, buy_entrust, sell_entrust, match_no, state, remark, receivables_type,
+        sell_account, buy_account, date, update_time, date AS dateFormatDate
+    </sql>
+    <!-- 新增广告记录相关信息 -->
+    <insert id="insertSpotDealDetail" useGeneratedKeys="true" keyProperty="id" parameterType="com.inesv.model.SpotDealDetail" >
+        INSERT INTO t_spot_deal_detail (order_no,entrust_no,buy_user_no, sell_user_no, coin_no, deal_price, entrust_price, deal_num, sum_price,
+        poundage_scale, poundage_coin, poundage,miner_fee, buy_entrust, sell_entrust, match_no, state, remark, receivables_type, sell_account, buy_account, date,update_time)
+        VALUES (#{orderNo},#{entrustNo},#{buyUserNo}, #{sellUserNo}, #{coinNo}, #{dealPrice}, #{entrustPrice}, #{dealNum}, #{sumPrice}, #{poundageScale},
+          #{poundageCoin}, #{poundage},#{minerFee},#{buyEntrust}, #{sellEntrust}, #{matchNo}, #{state}, #{remark}, #{receivablesType}, #{sellAccount}, #{buyAccount}, now(),now())
+    </insert>
+    <!-- 新增广告记录相关信息 -->
+    <insert id="insertSpotDealDetails" useGeneratedKeys="true" keyProperty="id" parameterType="java.util.List" >
+        INSERT INTO t_spot_deal_detail (order_no,entrust_no,buy_user_no, sell_user_no, coin_no, deal_price, entrust_price, deal_num, sum_price,
+        poundage_scale, poundage_coin, poundage,miner_fee, buy_entrust, sell_entrust, match_no, state, remark, receivables_type, sell_account, buy_account, date,update_time)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator="," >
+            (#{item.orderNo},#{item.entrustNo},#{item.buyUserNo}, #{item.sellUserNo}, #{item.coinNo}, #{item.dealPrice}, #{item.entrustPrice}, #{item.dealNum}, #{item.sumPrice},
+            #{item.poundageScale},#{item.poundageCoin}, #{item.poundage},#{item.minerFee}, #{item.buyEntrust}, #{item.sellEntrust}, #{item.matchNo}, #{item.state}, #{item.remark},
+            #{item.receivablesType}, #{item.sellAccount}, #{item.buyAccount}, now(),now())
+        </foreach>
+    </insert>
+    <!-- 修改广告记录相关信息 -->
+    <update id="updateSpotDealDetail" parameterType="com.inesv.model.SpotDealDetail" >
+        UPDATE t_spot_deal_detail
+        <set>
+            update_time =now(),
+            <if test="state !=null">
+            state =#{state},  
+            </if>
+            <if test="minerFee !=null">
+             miner_fee =#{minerFee},
+            </if>
+            <if test="attr2 !=null">
+             attr2 =#{attr2},
+            </if>
+        </set>
+        <where>1=1
+         <if test="orderNo != null">
+          AND order_no=#{orderNo}
+         </if>
+         <if test="id != null">
+          AND id=#{id}
+         </if>
+        </where>
+    </update>
+    <!-- 根据条件查找委托记录相关信息 -->
+    <select id="selectSpotDealDetailByCondition" resultMap="BaseResultMap"
+            parameterType="com.inesv.model.SpotDealDetail">
+        SELECT
+        t1.id,t1.entrust_no, t1.order_no, t1.buy_user_no, t1.sell_user_no, t1.coin_no, t1.deal_price, t1.entrust_price, t1.deal_num, t1.sum_price,
+        t1.poundage_scale, t1.poundage_coin, t1.poundage,t1.miner_fee, t1.buy_entrust, t1.sell_entrust, t1.match_no, t1.state,t1.update_time, t1.remark,
+        t1.receivables_type, t1.sell_account, t1.buy_account, t1.date, t1.date AS dateFormatDate,t1.attr1,t1.attr2,
+        IFNULL((SELECT coin_name FROM t_coin WHERE coin_no = t1.coin_no),"COIN") AS coinCore,
+        IFNULL((SELECT username FROM t_user WHERE id = t1.buy_user_no),"") AS buyUserName,
+        IFNULL((SELECT photo FROM t_user WHERE id = t1.buy_user_no),"") AS buyUserPhoto,
+        IFNULL((SELECT username FROM t_user WHERE id = t1.sell_user_no),"") AS sellUserName,
+        IFNULL((SELECT photo FROM t_user WHERE id = t1.sell_user_no),"") AS sellUserPhoto
+        FROM t_spot_deal_detail t1
+        WHERE 1=1
+        <if test="id!=null">
+            AND t1.id=#{id}
+        </if>
+        <if test="userNo!=null">
+            AND (t1.buy_user_no=#{userNo} OR t1.sell_user_no=#{userNo})
+        </if>
+        <if test="orderNo!=null">
+            AND t1.order_no=#{orderNo}
+        </if>
+        <if test="entrustNo!=null">
+            AND t1.entrust_no=#{entrustNo}
+        </if>
+        <if test="buyUserNo!=null">
+            AND t1.buy_user_no=#{buyUserNo}
+        </if>
+        <if test="sellUserNo!=null">
+            AND t1.sell_user_no=#{sellUserNo}
+        </if>
+        <if test="coinNo!=null">
+            AND t1.coin_no=#{coinNo}
+        </if>
+        <if test="state!=null">
+            AND t1.state=#{state}
+        </if>
+        ORDER BY t1.DATE DESC , t1.ID DESC
+    </select>
+    <!-- 根据条件查找委托记录相关信息 -->
+    <select id="selectSpotDealDetailByConditions" resultMap="BaseResultMap"
+            parameterType="com.inesv.model.SpotDealDetail">
+        SELECT
+        t1.id, t1.order_no, t1.buy_user_no, t1.sell_user_no, t1.coin_no, t1.deal_price, t1.entrust_price, t1.deal_num, t1.sum_price,
+        t1.poundage_scale, t1.poundage_coin, t1.poundage,t1.miner_fee, t1.buy_entrust, t1.sell_entrust, t1.match_no, t1.state, t1.remark,
+        t1.receivables_type, t1.sell_account,t1.buy_account, t1.date,t1.update_time, t1.date AS dateFormatDate,
+        IFNULL((SELECT coin_name FROM t_coin WHERE coin_no = t1.coin_no),"") AS coinCore,
+        IFNULL((SELECT username FROM t_user WHERE id = t1.buy_user_no),"") AS buyUserName,
+        IFNULL((SELECT photo FROM t_user WHERE id = t1.buy_user_no),"") AS buyUserPhoto,
+        IFNULL((SELECT username FROM t_user WHERE id = t1.sell_user_no),"") AS sellUserName,
+        IFNULL((SELECT photo FROM t_user WHERE id = t1.sell_user_no),"") AS sellUserPhoto
+        FROM t_spot_deal_detail t1
+        WHERE 1=1
+        <if test="id!=null">
+            AND t1.id=#{id}
+        </if>
+        <if test="orderNo!=null">
+            AND t1.order_no=#{orderNo}
+        </if>
+        <if test="entrustNo!=null">
+            AND t1.entrust_no=#{entrustNo}
+        </if>
+        <if test="userNo!=null">
+            AND (t1.buy_user_no=#{userNo} OR t1.sell_user_no=#{userNo})
+        </if>
+        <if test="buyUserNo!=null">
+            AND t1.buy_user_no=#{buyUserNo}
+        </if>
+        <if test="sellUserNo!=null">
+            AND t1.sell_user_no=#{sellUserNo}
+        </if>
+        <if test="coinNo!=null">
+            AND t1.coin_no=#{coinNo}
+        </if>
+        <if test="state!=null">
+            AND t1.state=#{state}
+        </if>
+        <if test="conductState!=null">
+            AND state in(3,4,6)
+        </if>
+        <if test="completeState!=null">
+            AND state in(1,2,5,7,8)
+        </if>
+        ORDER BY t1.DATE DESC , t1.ID DESC
+    </select>
+    <!-- 根据条件查找委托记录相关信息 -->
+    <select id="selectSpotDealDetailByConditionAndDate" resultMap="BaseResultMap"
+            parameterType="com.inesv.model.SpotDealDetail">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM t_spot_deal_detail
+        WHERE 1=1
+        <if test="id!=null">
+            AND id=#{id}
+        </if>
+        <if test="orderNo!=null">
+            AND order_no=#{orderNo}
+        </if>
+        <if test="entrustNo!=null">
+            AND entrust_no=#{entrustNo}
+        </if>
+        <if test="buyUserNo!=null">
+            AND buy_user_no=#{buyUserNo}
+        </if>
+        <if test="sellUserNo!=null">
+            AND sell_user_no=#{sellUserNo}
+        </if>
+        <if test="coinNo!=null">
+            AND coin_no=#{coinNo}
+        </if>
+        <if test="state!=null">
+            AND state=#{state}
+        </if>
+        /*暂时去掉时间限制*/
+--           AND date &gt; DATE_SUB(NOW(),INTERVAL 30 MINUTE) FOR UPDATE
+    </select>
+    <!-- 根据条件查找委托记录相关信息 -->
+    <select id="selectSpotDealDetailByConditionsAndDate" resultMap="BaseResultMap"
+            parameterType="com.inesv.model.SpotDealDetail">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM t_spot_deal_detail
+        WHERE 1=1
+        <if test="id!=null">
+            AND id=#{id}
+        </if>
+        <if test="orderNo!=null">
+            AND order_no=#{orderNo}
+        </if>
+        <if test="entrustNo!=null">
+            AND entrust_no=#{entrustNo}
+        </if>
+        <if test="buyUserNo!=null">
+            AND buy_user_no=#{buyUserNo}
+        </if>
+        <if test="sellUserNo!=null">
+            AND sell_user_no=#{sellUserNo}
+        </if>
+        <if test="coinNo!=null">
+            AND coin_no=#{coinNo}
+        </if>
+        <if test="state!=null">
+            AND state=#{state}
+        </if>
+        AND date &lt; DATE_SUB(NOW(),INTERVAL 30 MINUTE)
+    </select>
+    <!-- 根据条件查找委托记录相关信息（总记录数） -->
+    <select id="selectCountByConditions" resultType="int"
+            parameterType="com.inesv.model.SpotDealDetail">
+        SELECT COUNT(id)
+        FROM t_spot_deal_detail
+        WHERE 1=1
+        <if test="id!=null">
+            AND id=#{id}
+        </if>
+        <if test="orderNo!=null">
+            AND order_no=#{orderNo}
+        </if>
+        <if test="entrustNo!=null">
+            AND entrust_no=#{entrustNo}
+        </if>
+        <if test="buyUserNo!=null">
+            AND buy_user_no=#{buyUserNo}
+        </if>
+        <if test="sellUserNo!=null">
+            AND sell_user_no=#{sellUserNo}
+        </if>
+        <if test="coinNo!=null">
+            AND coin_no=#{coinNo}
+        </if>
+        <if test="state!=null">
+            AND state=#{state}
+        </if>
+    </select>
+    <!-- 根据条件查找委托记录相关信息 -->
+    <select id="selectSpotDealDetailByPrimaryKey" resultMap="BaseResultMap"
+            parameterType="com.inesv.model.SpotDealDetail">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM t_spot_deal_detail
+        <where>
+          id = #{id}
+          <if test="state !=null">
+            AND state =#{state}
+          </if>
+        </where>
+        FOR UPDATE
+    </select>
+
+    <select id="queryByOrderNo" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_spot_deal_detail
+        WHERE order_no = #{orderNo}
+    </select>
+    
+    <!-- 自动查找达到纠纷时间的订单 -->
+    <select id="selectAutoSpute" resultMap="BaseResultMap">
+      SELECT
+        <include refid="Base_Column_List" />
+        FROM t_spot_deal_detail
+        WHERE 
+        state=#{state}
+        AND update_time &lt; DATE_SUB(NOW(),INTERVAL ${dateType} MINUTE)
+    </select>
+
+    <!-- 根据条件查找委托记录相关信息（总记录数） -->
+    <select id="selectCountByState" resultType="int"
+            parameterType="com.inesv.model.SpotDealDetail">
+        SELECT COUNT(id)
+        FROM t_spot_deal_detail
+        WHERE 1=1
+        <if test="id!=null">
+            AND id=#{id}
+        </if>
+        <if test="orderNo!=null">
+            AND order_no=#{orderNo}
+        </if>
+        <if test="entrustNo!=null">
+            AND entrust_no=#{entrustNo}
+        </if>
+        <if test="buyUserNo!=null">
+            AND buy_user_no=#{buyUserNo}
+        </if>
+        <if test="sellUserNo!=null">
+            AND sell_user_no=#{sellUserNo}
+        </if>
+        <if test="coinNo!=null">
+            AND coin_no=#{coinNo}
+        </if>
+            AND state in(3,4,6)
+    </select>
+</mapper>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.inesv.mapper.UserRelationMapper">
+	<resultMap id="BaseResultMap" type="com.inesv.model.UserRelation">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="user_id" property="userId" jdbcType="BIGINT" />
+		<result column="rec_id" property="recId" jdbcType="BIGINT" />
+		<result column="date" property="date" jdbcType="TIMESTAMP" />
+		<result column="tree_grade" property="treeTrade"  />
+		<result column="path" property="path"  />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id, user_id, rec_id, date,tree_grade,path
+	</sql>
+
+	<insert id="insertUserRelation" useGeneratedKeys="true" keyProperty="id"
+		parameterType="com.inesv.model.UserRelation">
+		INSERT INTO t_user_relation (user_id, rec_id, date,tree_grade,path)
+		VALUES (#{userId}, #{recId}, now(),#{treeTrade},#{path})
+	</insert>
+
+	<select id="getUserRelationByCondition" resultMap="BaseResultMap"
+			parameterType="com.inesv.model.UserRelation">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM t_user_relation
+		WHERE 1 = 1
+		<if test="id!=null">
+			AND id=#{id}
+		</if>
+		<if test="userId!=null">
+			AND user_id=#{userId}
+		</if>
+		<if test="recId!=null">
+			AND rec_id=#{recId}
+		</if>
+	</select>
+
+	<select id="getMaxTreeGrade" resultType="java.lang.Integer">
+		SELECT MAX(tree_grade) FROM t_user_relation
+	</select>
+
+	<select id="getMaxTreeGradeList" parameterType="java.lang.Integer"   resultType="java.lang.Long">
+		SELECT user_id FROM t_user_relation WHERE tree_grade =#{treeGrade}
+	</select>
+
+</mapper>

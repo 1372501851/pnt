@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.inesv.mapper.NewsMapper" >
+  <resultMap id="BaseResultMap" type="com.inesv.model.News" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="news_title" property="newsTitle" jdbcType="VARCHAR" />
+    <result column="news_text" property="newsText" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="admin_id" property="adminId" jdbcType="VARCHAR" />
+    <result column="news_url" property="newsUrl" jdbcType="VARCHAR" />
+    <result column="news_img" property="newsImg" jdbcType="VARCHAR" />
+    <result column="news_langue" property="newsLangue" jdbcType="INTEGER" />
+    <result column="news_summary" property="newsSummary" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id,news_title,news_summary,news_text,create_time,admin_id,news_url,news_img,news_langue
+  </sql>
+
+  
+  <!--根据语言 查询资讯集合 -->
+  <select id="getNewsListByLangue"  resultMap="BaseResultMap"  parameterType="int" >
+    select
+    id,news_title,news_summary,news_text,create_time,admin_id,news_url,news_img,news_langue
+    from t_news
+     WHERE 1=1
+     <if test="newsLangue != null">
+         AND news_langue=#{newsLangue}
+     </if>
+    order by create_time DESC
+  </select>
+  
+  <!--统计记录数 -->
+    <select id="getNewsCountsByLangue"    resultType="int"  >
+        SELECT  COUNT(id)   FROM  t_news
+        WHERE 1=1
+     <if test="newsLangue != null">
+         AND news_langue=#{newsLangue}
+     </if>
+    </select>
+    
+    <!-- 资讯详情 -->
+  <select id="getNewsDetail"  resultMap="BaseResultMap"  parameterType="long" >
+    select
+    id,news_title,news_summary,news_text,create_time
+    from t_news
+     WHERE 1=1
+     <if test="id != null">
+         AND id=#{id}
+     </if>
+  </select>
+    
+
+</mapper>

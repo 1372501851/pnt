@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.inesv.mapper.PicVerifyCodeRecordMapper">
+    <resultMap id="BaseResultMap" type="com.inesv.model.PicVerifyCodeRecord">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="mobile" property="mobile" jdbcType="VARCHAR"/>
+        <result column="verify_code" property="verifyCode" jdbcType="VARCHAR"/>
+        <result column="type" property="type" jdbcType="INTEGER"/>
+        <result column="ip" property="ip" jdbcType="VARCHAR"/>
+        <result column="send_time" property="sendTime" jdbcType="TIMESTAMP"/>
+        <result column="state" property="state" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    id,mobile,verify_code,type,ip,state,send_time
+    </sql>
+
+    <select id="getValidVerifyCode4LastOne" resultMap="BaseResultMap" parameterType="com.inesv.model.PicVerifyCodeRecord">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM t_picverifycode_record
+        <where>
+            <if test="mobile != null">
+                AND mobile=#{mobile}
+            </if>
+            <if test="type != null">
+                AND type=#{type}
+            </if>
+            <if test="validTime != null">
+                AND TIMESTAMPDIFF(SECOND, send_time, NOW()) <![CDATA[ <= ]]> #{validTime}
+            </if>
+            <if test="state != null">
+                AND state=#{state}
+            </if>
+        </where>
+        ORDER BY send_time DESC LIMIT 1
+    </select>
+
+    <select id="getCountByConditions" resultType="int" parameterType="com.inesv.model.PicVerifyCodeRecord">
+        SELECT
+        COUNT(1)
+        FROM t_picverifycode_record
+        <where>
+            <if test="mobile != null">
+                AND mobile=#{mobile}
+            </if>
+            <if test="validTime != null">
+                AND TIMESTAMPDIFF(SECOND, send_time, NOW()) <![CDATA[ <= ]]> #{validTime}
+            </if>
+            <if test="dateFormat != null">
+                AND DATE_FORMAT(send_time,'%Y-%m-%d')=#{dateFormat}
+            </if>
+            <if test="ip != null">
+                AND ip=#{ip}
+            </if>
+        </where>
+        ORDER BY send_time DESC LIMIT 1
+    </select>
+
+    <insert id="add" parameterType="com.inesv.model.PicVerifyCodeRecord">
+        INSERT INTO
+        t_picverifycode_record(mobile,verify_code,type,ip,send_time)
+        VALUES
+        (#{mobile},#{verifyCode},#{type},#{ip},NOW())
+    </insert>
+
+    <update id="update" parameterType="com.inesv.model.PicVerifyCodeRecord">
+        UPDATE
+        t_picverifycode_record
+        <trim prefix="set" suffixOverrides=",">
+            <if test="state!=null">state=#{state},</if>
+        </trim>
+        <where>
+            <if test="id!=null">
+                AND id=#{id}
+            </if>
+        </where>
+    </update>
+</mapper>

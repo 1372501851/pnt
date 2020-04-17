@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inesv.mapper.PointMapper">
+
+    <insert id="createOrder" parameterType="java.lang.Object">
+        INSERT INTO pay_point_order (user_id,point,order_no,pay_coin,pay_amount,create_time,update_time) VALUES (#{userId},#{point},#{orderNo},#{defaultCoin},#{amount},now(),now())
+    </insert>
+    
+    <select id="getPoint" parameterType="java.lang.Object" resultType="java.lang.String">
+        SELECT point from pay_point_order WHERE user_id=#{userId} and order_no=#{orderNo}
+    </select>
+
+    <select id="getOrderAmount" parameterType="java.lang.Object" resultType="java.lang.String">
+        SELECT pay_amount FROM pay_point_order WHERE user_id=#{userId} and order_no=#{orderNo}
+    </select>
+    
+    <update id="updatePayState" parameterType="java.lang.Object">
+        UPDATE   pay_point_order  SET pay_state=1 WHERE user_id=#{userId} and order_no=#{orderNo}
+    </update>
+
+    <select id="getOrderInfo" parameterType="java.lang.Object" resultType="com.inesv.model.PayPointOrder">
+                SELECT point,pay_amount "payAmount",pay_state "payState",pay_coin "payCoin" from pay_point_order WHERE user_id=#{userId} and order_no=#{orderNo}
+    </select>
+    
+    <insert id="insertPayOrder" parameterType="java.lang.Object">
+        INSERT INTO  pay_point_coin_record (user_id,point,`type`,order_no,order_info,trade_target,create_time,update_time) VALUES (#{userId},#{point},#{payType},#{orderNo},#{orderInfo},#{username},now(),now())
+    </insert>
+    
+    <select id="payRecord" parameterType="java.lang.Long" resultType="com.inesv.model.PayPointRecord">
+        SELECT point,coin_type "coinType",coin_quantity "coinQuantity",`type` , order_no "orderNo",order_info "orderInfo",trade_target "tradeTarget",create_time "createTime" FROM pay_point_coin_record WHERE user_id=#{userId} order by create_time desc
+    </select>
+
+    <select id="payRecordByType" parameterType="java.lang.Object" resultType="com.inesv.model.PayPointRecord">
+        SELECT point,coin_type "coinType",coin_quantity "coinQuantity",`type` , order_no "orderNo",order_info "orderInfo",trade_target "tradeTarget",create_time "createTime" FROM pay_point_coin_record WHERE user_id=#{userId} and `type`=#{type} order by create_time desc
+    </select>
+
+    <select id="PayRecordBySDK" parameterType="java.lang.Object" resultType="com.inesv.model.PayPointRecord">
+        SELECT point,coin_type "coinType",coin_quantity "coinQuantity",`type` , order_no "orderNo",order_info "orderInfo",trade_target "tradeTarget",create_time "createTime" FROM pay_point_coin_record WHERE user_id=#{userId} and `type` in (4,5) order by create_time desc
+    </select>
+
+    <insert id="insertPointPay" parameterType="java.lang.Object">
+        INSERT INTO  pay_point_coin_record (user_id,point,`type`,order_no,trade_target,coin_type,coin_quantity,create_time,update_time) VALUES (#{userId},#{point},1,#{orderNo},#{tradeTarget},#{payCoin},#{amount},now(),now())
+    </insert>
+
+    <update id="updatePoint" parameterType="java.lang.Object">
+        UPDATE pay_point SET point=point+#{point},update_time=now() where user_id=#{userId}
+    </update>
+</mapper>

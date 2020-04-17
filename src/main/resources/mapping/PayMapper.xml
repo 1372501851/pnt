@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inesv.mapper.PayMapper">
+
+    <sql id="Base_Column_List">
+        id, username,platform_package_name,moc_address,exchange_address,remark
+    </sql>
+
+
+
+    <insert id="register" parameterType="com.inesv.model.PayRegister" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO pay_register (username,platform_package_name,moc_address,trade_user_id,password,remark,create_time,update_time) VALUES (#{platformName},#{platformPackageName},#{mocAddress},#{tradeUserId},#{password},#{remark},now(),now())
+    </insert>
+    
+    <update id="update" parameterType="java.lang.Object">
+        UPDATE pay_register SET app_id=#{appId},update_time=now(),data_key=#{dataKey},signature=#{signature} where id=#{id}
+    </update>
+
+    <select id="isExistUsername" parameterType="com.inesv.model.PayRegister" resultType="com.inesv.model.PayRegister">
+        SELECT <include refid="Base_Column_List"/>    FROM pay_register WHERE username=#{platformName}
+    </select>
+    
+    <select id="getDataKey" parameterType="java.lang.String"  resultType="java.lang.String">
+        SELECT data_key FROM pay_register WHERE signature=#{signature}
+    </select>
+
+    <select id="getSignature" parameterType="java.lang.String"  resultType="java.lang.String">
+        SELECT signature FROM pay_register WHERE app_id=#{appId}
+    </select>
+    
+    <insert id="createOrder" parameterType="com.inesv.model.PayOrder" useGeneratedKeys="true" keyProperty="id">
+      INSERT INTO pay_order (`NAME`,price,order_no,app_id,create_time,update_time,push_url,pre_order_no,tag) VALUES (#{orderInfo},#{price},#{orderNo},#{appId},#{createTime},now(),#{pushUrl},#{preOrderNo},#{tag})
+    </insert>
+    
+    <select id="getOrder" parameterType="com.inesv.model.PayOrder" resultType="com.inesv.model.PayOrderVo" >
+        SELECT `NAME` "orderInfo" , price , order_no "orderNo",DATE_FORMAT(create_time,"%Y-%m-%d %H:%i:%s") "createTime"  ,pre_order_no "preOrderNo" from pay_order WHERE id=#{id}
+    </select>
+    
+    <select id="queryOrder" parameterType="com.inesv.model.PayOrder" resultType="com.inesv.model.PayOrderNotify">
+      SELECT `name` "orderInfo", price , order_no "orderNo",pre_order_no "preOrderNo",pay_status "payStatus", trade_price "tradePrice",order_status "orderStatus",coin_type "coinType",quantity,DATE_FORMAT(create_time,"%Y-%m-%d %H:%i:%s") "createTime"
+      FROM pay_order WHERE app_id=#{appId} and pre_order_no=#{preOrderNo} and order_no=#{orderNo} and order_status=1
+    </select>
+    
+    <select id="getTag" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT tag FROM pay_order WHERE app_id=#{appId} and order_no=#{orderNo}
+    </select>
+    
+    <select id="getCoinType" parameterType="java.lang.Long" resultType="java.lang.String">
+   SELECT coin_name FROM `t_coin` WHERE coin_no IN (SELECT TYPE FROM t_user_wallet WHERE user_id=#{userId})
+</select>
+    
+    <select id="isRepeatOrder" parameterType="java.lang.Object" resultType="java.lang.Integer">
+      SELECT count(*) FROM pay_order WHERE app_id=#{appId} and order_no=#{orderNo}
+    </select>
+
+    <update id="insertUserId" parameterType="java.lang.Object">
+        UPDATE pay_order SET user_id=#{userId} where app_id=#{appId} and order_no=#{orderNo}
+    </update>
+    
+    <select id="getPayStatus" parameterType="java.lang.Object" resultType="java.lang.Integer">
+        SELECT  pay_status  FROM   pay_order WHERE app_id=#{appId} and order_no=#{orderNo} and user_id=#{userId} and order_status=1
+    </select>
+
+    <update id="freeze" parameterType="java.lang.Object">
+        update t_user_wallet SET balance=balance-#{coinQuantity},unbalance=unbalance+#{coinQuantity},pay_status=1 where user_id=#{userId} and type=#{coinType}
+    </update>
+
+    <update id="freeFreeze" parameterType="java.lang.Object">
+        update t_user_wallet SET unbalance=unbalance-#{coinQuantity} where user_id=#{userId} and type=#{coinNo} and pay_status=1
+    </update>
+    
+    <update id="updateOrderStatus" parameterType="java.lang.Object">
+        UPDATE pay_order SET pay_status=1,coin_type=#{coinType} ,trade_order_id=#{tradeOrderId} where app_id=#{appId} and order_no=#{orderNo} and user_id=#{userId} and order_status=1
+    </update>
+
+    <update id="updateOrderState" parameterType="java.lang.Object">
+        UPDATE pay_order SET pay_status=1,coin_type=#{coinType}  where app_id=#{appId} and order_no=#{orderNo} and user_id=#{userId} and order_status=1
+    </update>
+
+    <select id="getMoney" parameterType="java.lang.Object" resultType="java.math.BigDecimal">
+        SELECT balance FROM t_user_wallet WHERE user_id=#{userId} and type=#{coinType}
+    </select>
+    
+    <update id="updateEncode" parameterType="java.lang.Object">
+        update pay_order set `data`=#{data} ,encode=#{encode},money_mark=#{moneyMark} where id=#{id}
+    </update>
+
+    <select id="getData" parameterType="java.lang.String" resultType="java.util.Map">
+        SELECT app_id "appId",`data` FROM pay_order WHERE encode=#{encode}
+    </select>
+    
+    <select id="getPreOrderNo" parameterType="java.lang.Object" resultType="java.lang.String">
+        SELECT pre_order_no FROM pay_order WHERE app_id=#{appId} and order_no=#{orderNo}
+    </select>
+    
+    <update id="updateOrderQuantity" parameterType="java.lang.Object">
+          UPDATE pay_order SET quantity=#{quantity} ,trade_price=#{tradePrice},user_id=#{userId},update_time=now(),coin_type=#{coinType},main_money=#{mainMoney} where app_id=#{appId} and order_no=#{orderNo} and order_status=1
+    </update>
+
+    <insert id="getRegisterEncode" parameterType="java.lang.String">
+        INSERT INTO pay_encode (encode,encode_str,create_time) VALUES (#{encode},#{encodeStr},now())
+    </insert>
+    
+    <select id="getPayOrder" resultType="java.util.Map">
+      SELECT app_id "appId" , user_id "userId" , trade_price "tradePrice", quantity ,coin_type "coinType" ,trade_order_id "tradeOrderId",pre_order_no "preOrderNo" FROM pay_order WHERE pay_status=1 AND order_status=1 AND coin_type <![CDATA[ != ]]> "POINT"
+    </select>
+    
+    <select id="getSellInfo" parameterType="java.lang.Object" resultType="com.inesv.model.PaySellConfig">
+        SELECT uid,currency_id "currencyId",base_currency_id "baseCurrencyId",`type`,fdPassword,  buy_or_sell "buyOrSell", source FROM  `pay_sell_config`   WHERE  app_id=#{appId} AND currency_type=#{coinType}
+    </select>
+
+    <select id="getAddress" parameterType="java.lang.Object" resultType="java.lang.String">
+        SELECT address FROM pay_trade_address WHERE app_id=#{appId} and type=#{type}
+    </select>
+    
+    <update id="updateActualExchange" parameterType="java.lang.Object">
+        UPDATE pay_order SET actual_exchange=#{totalExchange} where trade_order_id=#{tradeOrderId}
+    </update>
+    
+    <update id="grantMoney" parameterType="java.lang.Object">
+    UPDATE `t_user_wallet` SET balance=balance+#{quantity} WHERE address= (SELECT  moc_address FROM  `pay_register` WHERE app_id=#{appId}) AND `TYPE`=#{coinNo}
+    </update>
+
+    <update id="updatePayStatus" parameterType="java.lang.Object">
+                UPDATE pay_order SET pay_status=#{payStatus} where pre_order_no=#{preOrderNo} and user_id=#{userId}
+    </update>
+    
+    <select id="getPlatformAddress" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT  moc_address FROM  `pay_register` WHERE app_id=#{appId}
+    </select>
+
+    <insert id="insertRecord" parameterType="java.lang.Object">
+        INSERT INTO pay_trade_record (app_id,address,user_id,quantity,coin_type,hash,create_time) VALUES (#{appId},#{address},#{userId},#{quantity},#{coinType},#{hash},now())
+    </insert>
+    
+    <select id="isEnoughPoint" parameterType="java.lang.Long" resultType="java.math.BigDecimal">
+        SELECT point FROM pay_point WHERE user_id=#{userId}
+    </select>
+    
+    <select id="getMainMoney" parameterType="java.lang.Object" resultType="java.lang.String">
+        SELECT main_money FROM pay_order WHERE app_id=#{appId} and user_id=#{userId} and order_no=#{orderNo} AND pre_order_no=#{preOrderNo} and order_status=1
+    </select>
+    
+    <update id="deduct" parameterType="java.lang.Object" >
+        UPDATE pay_point SET point=point-#{point},update_time=now() where user_id=#{userId}
+    </update>
+    
+    <select id="getMerchantAddress" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT moc_address FROM pay_register WHERE app_id=#{appId}
+    </select>
+
+    <update id="addPoint" parameterType="java.lang.Object">
+        UPDATE pay_point SET point=point+#{point},update_time=now() where user_id=#{userId}
+    </update>
+
+    <insert id="addPointRecord" parameterType="java.lang.Object">
+        insert INTO pay_point_record (user_id,merchant_id,point_quantity,create_time) VALUES (#{userId},#{merchantId},#{point},now())
+    </insert>
+    
+    <update id="updateOrderByPoint" parameterType="java.lang.Object">
+        UPDATE pay_order SET pay_status=2 , pay_type=2 WHERE app_id=#{appId} and user_id=#{userId} and order_no=#{orderNo} AND pre_order_no=#{preOrderNo} and order_status=1
+    </update>
+    
+    <select id="isExistPointAddress" parameterType="java.lang.String" resultType="java.lang.Integer">
+        SELECT count(*) FROM pay_point WHERE address=#{address}
+    </select>
+    
+    <insert id="insertPointInfo" parameterType="java.lang.Object">
+        INSERT INTO pay_point (user_id,address,create_time,update_time) VALUES (#{userId},#{address},now(),now())
+    </insert>
+
+    <select id="getPayState" parameterType="java.lang.Object" resultType="java.lang.Integer">
+        SELECT  pay_status  FROM   pay_order WHERE app_id=#{appId} and order_no=#{orderNo}  and order_status=1
+    </select>
+    
+    <select id="getPayCoinType" parameterType="java.lang.Object" resultType="java.lang.String">
+        SELECT coin_type FROM pay_order WHERE user_id=#{userId} and order_no=#{orderNo}
+    </select>
+    
+    <update id="updateNotice" parameterType="java.lang.Object">
+        UPDATE pay_order SET notice=1 WHERE app_id=#{appId} and user_id=#{userId} and order_no=#{orderNo} and order_status=1
+    </update>
+    
+    <select id="getNameAndUserId" parameterType="java.lang.String" resultType="java.util.Map">
+     SELECT p.username,t.user_id "userId"  FROM (  SELECT username,moc_address FROM pay_register WHERE app_id=#{appId} ) p,t_user_wallet t WHERE    t.TYPE=40 AND t.address= p.moc_address
+    </select>
+
+    <select id="isExistAddress" parameterType="com.inesv.model.PayRegister" resultType="com.inesv.model.PayRegister">
+        SELECT <include refid="Base_Column_List"/>    FROM pay_register WHERE moc_address=#{mocAddress}
+    </select>
+
+    <update id="updateOrderTag" parameterType="java.lang.Object">
+        UPDATE pay_order SET trade_tag=1 WHERE app_id=#{appId} and pre_order_no=#{preOrderNo}
+    </update>
+    
+    <select id="getWalletUserId" resultType="java.lang.Long">
+      SELECT user_id  FROM `t_user_wallet` GROUP BY user_id
+    </select>
+
+</mapper>

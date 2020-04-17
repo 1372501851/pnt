@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inesv.mapper.NodeUserDrawMapper">
+
+    <select id="getUserDrawRecord" parameterType="java.lang.Long" resultType="com.inesv.model.NodeUserDraw">
+        SELECT amount "amount",createtime "createtime" FROM t_node_user_draw WHERE total_id=#{totalId}
+    </select>
+</mapper>
