@@ -4,7 +4,7 @@
     <resultMap id="BaseResultMap" type="com.inesv.model.NewsSeeUser">
         <id column="id" property="id" jdbcType="BIGINT"/>
         <result column="user_id" property="userId" jdbcType="BIGINT"/>
-        <result column="news_id_list" property="newsIdList" jdbcType="VARCHAR"/>
+        <result column="news_id_list" property="newsIdList" />
         <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
     </resultMap>
 
@@ -30,7 +30,8 @@
         </if>
     </select>
 
-    <update id="updateNewsId" parameterType="Integer">
+    <update id="updateNewsId" useGeneratedKeys="true" keyProperty="id"
+            parameterType="com.inesv.model.NewsSeeUser">
         UPDATE t_news_see_user
         <set>
             id = id
@@ -46,7 +47,7 @@
 
 
     <!-- 将公告id插入到对应数据库的表中,包括属性值为null的数据 -->
-    <insert id="addNewsSeeUser" parameterType="Integer">
+    <insert id="addNewsSeeUser" parameterType="com.inesv.model.NewsSeeUser">
 		insert into
 		`t_news_see_user` (user_id,news_id_list)
 		values (#{userId},#{newsIdList})

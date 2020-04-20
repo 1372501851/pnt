@@ -80,7 +80,7 @@ public class NewsSeeUserServiceImpl implements NewsSeeUserService {
                         String str = String.join(",", sortList);
                         newsIdList = str;
                     }
-                    Integer num = newsSeeUserMapper.updateNewsId(userId, newsIdList);
+                    int num = newsSeeUserMapper.updateNewsId(userId, newsIdList);
                     if (num > 0) {
                         return RspUtil.success(200, "公告状态修改成功", null);
                     }
@@ -92,7 +92,7 @@ public class NewsSeeUserServiceImpl implements NewsSeeUserService {
                 NewsSeeUser newsSeeUser1 = new NewsSeeUser();
                 newsSeeUser1.setUserId(Integer.valueOf(userId));
                 newsSeeUser1.setNewsIdList(newId);
-                Integer num = newsSeeUserMapper.addNewsSeeUser(newsSeeUser1);
+                int num = newsSeeUserMapper.addNewsSeeUser(newsSeeUser1);
                 if (num > 0) {
                     return RspUtil.success(200, "新添加用户到已读公告列表，状态修改成功", null);
                 }
